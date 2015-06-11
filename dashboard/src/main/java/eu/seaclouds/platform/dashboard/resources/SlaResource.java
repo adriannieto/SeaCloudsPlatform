@@ -18,6 +18,8 @@
 package eu.seaclouds.platform.dashboard.resources;
 
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import eu.seaclouds.platform.dashboard.ConfigParameters;
 import eu.seaclouds.platform.dashboard.http.HttpGetRequestBuilder;
 import eu.seaclouds.platform.dashboard.http.HttpPostRequestBuilder;
@@ -37,8 +39,12 @@ public class SlaResource {
 
     @POST
     @Path("agreements")
-    public Response addAgreements(@FormParam("agreements") String agreements,
-                                  @FormParam("rules") String rules) {
+    public Response addAgreements(String json) {
+        JsonObject input = new JsonParser().parse(json).getAsJsonObject();
+
+
+        String rules = input.get("rules").getAsJsonPrimitive().getAsString();
+        String agreements = input.get("agreements").getAsJsonPrimitive().getAsString();
 
         if (agreements != null && rules != null) {
             try {
@@ -49,11 +55,22 @@ public class SlaResource {
                         .addParam("rules", rules)
                         .host(ConfigParameters.SLA_ENDPOINT)
                         .path("/seaclouds/agreements")
+                        .addHeader("Accept", "application/json")
+                        .build();
+                                // Change to JSON if necessary
+                                // .addHeader("Content-Type", "application/json")
+                                // .addHeader("Accept", "application/json")
+
+
+                // Notify the SLA when the rules are ready (Issue #56)
+                new HttpPostRequestBuilder()
+                        .host(ConfigParameters.SLA_ENDPOINT)
+                        .path("/seaclouds/commands/rulesready")
+                        .addHeader("Accept", "application/json")
                         .build();
 
-                return Response.ok().build();
+                return Response.ok(slaResponse.toString()).build();
             } catch (URISyntaxException | IOException e) {
-                log.error(e.getMessage());
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
         } else {
@@ -63,12 +80,27 @@ public class SlaResource {
 
     @GET
     @Path("agreements")
-    public Response availableMetrics(@QueryParam("provider") String provider, @QueryParam("status") String status) {
+    public Response listAgreements(@QueryParam("provider") String provider, @QueryParam("status") String status) {
         try {
-            //TODO: FILTER BY PARAMS
+            String calculatedPath = "/agreements";
+            if (provider != null) {
+                calculatedPath += "?provider=" + provider;
+
+            }
+
+            if (provider == null && status != null) {
+                calculatedPath += "?";
+            } else if (provider != null && status != null) {
+                calculatedPath += "&";
+            }
+
+            if (status != null) {
+                calculatedPath += "status=" + status;
+            }
+
             String slaResponse = new HttpGetRequestBuilder()
                     .host(ConfigParameters.SLA_ENDPOINT)
-                    .path("/agreements")
+                    .path(calculatedPath)
                     .addHeader("Content-Type", "application/json")
                     .addHeader("Accept", "application/json")
                     .build();

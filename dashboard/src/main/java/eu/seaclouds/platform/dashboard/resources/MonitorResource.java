@@ -25,6 +25,9 @@ import com.google.gson.JsonParser;
 import eu.seaclouds.platform.dashboard.ConfigParameters;
 import eu.seaclouds.platform.dashboard.http.HttpDeleteRequestBuilder;
 import eu.seaclouds.platform.dashboard.http.HttpGetRequestBuilder;
+import eu.seaclouds.platform.dashboard.http.HttpPostRequestBuilder;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -64,7 +67,7 @@ public class MonitorResource {
     }
 
 
-    private boolean isNumberType(String sensorType){
+    private boolean isNumberType(String sensorType) {
         return sensorType.equals("java.lang.Integer")
                 || sensorType.equals("java.lang.Double")
                 || sensorType.equals("java.lang.Float")
@@ -81,7 +84,7 @@ public class MonitorResource {
                 .setCredentials(ConfigParameters.DEPLOYER_USERNAME, ConfigParameters.DEPLOYER_PASSWORD)
                 .path("/v1/applications/" + applicationId + "/entities")
                 .build();
-        
+
         JsonArray entityList = new JsonParser().parse(rawEntityList).getAsJsonArray();
         JsonArray allMetricsList = new JsonArray();
         for (JsonElement entity : entityList) {
@@ -94,13 +97,13 @@ public class MonitorResource {
             entityJson.addProperty("id", entityId);
             entityJson.addProperty("name", entityName);
             entityJson.add("metrics", entityMetrics);
-            
+
             allMetricsList.add(entityJson);
         }
-        
+
         return allMetricsList;
     }
-    
+
     private JsonArray retrieveMetrics(String applicationId, String entityId) throws IOException, URISyntaxException {
         String monitorResponse = new HttpGetRequestBuilder()
                 .host(ConfigParameters.DEPLOYER_ENDPOINT)
@@ -112,10 +115,10 @@ public class MonitorResource {
 
         Iterator<JsonElement> metricIterator = metricList.iterator();
 
-        while(metricIterator.hasNext()){
+        while (metricIterator.hasNext()) {
             JsonObject metric = metricIterator.next().getAsJsonObject();
             metric.remove("links");
-            if(!isNumberType(metric.getAsJsonPrimitive("type").getAsString())){
+            if (!isNumberType(metric.getAsJsonPrimitive("type").getAsString())) {
                 metricIterator.remove();
             }
         }
@@ -123,10 +126,10 @@ public class MonitorResource {
         return metricList.getAsJsonArray();
 
     }
-    
+
     @GET
     @Path("metrics")
-    public Response availableMetrics(@QueryParam("applicationId") String applicationId){
+    public Response availableMetrics(@QueryParam("applicationId") String applicationId) {
         if (applicationId != null) {
             try {
                 JsonArray metricList = retrieveMetrics(applicationId);
@@ -158,16 +161,34 @@ public class MonitorResource {
 
     }
 
+    @POST
+    @Path("rules")
+    public Response addMonitoringRules(String monitoringRules) {
+
+        try {
+            String monitorResponse = new HttpPostRequestBuilder()
+                    .entity(new StringEntity(monitoringRules, ContentType.APPLICATION_XML))
+                    .host(ConfigParameters.MONITOR_ENDPOINT)
+                    .path("/v1/monitoring-rules")
+                    .build();
+
+            return Response.ok().build();
+        } catch (IOException | URISyntaxException e) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+    }
+
 
     @DELETE
-    @Path("rules")
-    public Response removeMonitoringRules(@QueryParam("id") String id) {
+    @Path("rules/{id}")
+    public Response removeMonitoringRules(@PathParam("id") String id) {
 
         if (id != null) {
             try {
                 String monitorResponse = new HttpDeleteRequestBuilder()
                         .host(ConfigParameters.MONITOR_ENDPOINT)
-                        .path("/v1/monitoring-rules/"+id)
+                        .path("/v1/monitoring-rules/" + id)
                         .build();
                 return Response.ok().build();
             } catch (IOException | URISyntaxException e) {
@@ -181,15 +202,35 @@ public class MonitorResource {
 
     }
 
-    @DELETE
+
+
+    @POST
     @Path("model")
-    public Response removeDeploymentModel(@QueryParam("id") String id) {
+    public Response addDeploymentModel(String monitoringModel) {
+
+        try {
+            String monitorResponse = new HttpPostRequestBuilder()
+                    .entity(new StringEntity(monitoringModel, ContentType.APPLICATION_JSON))
+                    .host(ConfigParameters.MONITOR_ENDPOINT)
+                    .path("/v1/model/resources")
+                    .build();
+
+            return Response.ok().build();
+        } catch (IOException | URISyntaxException e) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+    }
+
+    @DELETE
+    @Path("model/{id}")
+    public Response removeDeploymentModel(@PathParam("id") String id) {
 
         if (id != null) {
             try {
                 String monitorResponse = new HttpDeleteRequestBuilder()
                         .host(ConfigParameters.MONITOR_ENDPOINT)
-                        .path("/v1/model/resources/"+id)
+                        .path("/v1/model/resources/" + id)
                         .build();
                 return Response.ok().build();
             } catch (IOException | URISyntaxException e) {
