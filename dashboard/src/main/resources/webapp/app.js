@@ -123,32 +123,37 @@ seacloudsDashboard.factory('SeaCloudsApi', function ($http) {
                         deployerResponse = response;
                         damSuccessCallback(response)
 
-                        // Deploy monitor rules
-                        $http.post("/api/monitor/rules", monitoringRules).
-                            success(function () {
-                                monitoringRulesSuccessCallback();
-
-
-                                $http.post("/api/sla/agreements", {
-                                    rules: monitoringRules,
-                                    agreements: agreements
-                                }).
-                                    success(function (data) {
-                                        agreementsSuccessCallback();
-                                        resolveParent(deployerResponse);
-
+                        if(monitoringRules && agreements){
+                            // Deploy monitor rules
+                            $http.post("/api/monitor/rules", monitoringRules).
+                                success(function () {
+                                    monitoringRulesSuccessCallback();
+                                    $http.post("/api/sla/agreements", {
+                                        rules: monitoringRules,
+                                        agreements: agreements
                                     }).
-                                    error(function (err) {
-                                        //TODO: Rollback monitoring rules + monitor model + deployed app
-                                        agreementsErrorCallback();
-                                        rejectParent(err);
-                                    })
-                            }).
-                            error(function (err) {
-                                //TODO: Rollback monitor model + deployed app
-                                monitoringRulesErrorCallback();
-                                rejectParent(err);
-                            })
+                                        success(function (data) {
+                                            agreementsSuccessCallback();
+                                            resolveParent(deployerResponse);
+
+                                        }).
+                                        error(function (err) {
+                                            //TODO: Rollback monitoring rules + monitor model + deployed app
+                                            agreementsErrorCallback();
+                                            rejectParent(err);
+                                        })
+                                }).
+                                error(function (err) {
+                                    //TODO: Rollback monitor model + deployed app
+                                    monitoringRulesErrorCallback();
+                                    rejectParent(err);
+                                });
+                        }else{
+                            // They are optional
+                            monitoringRulesSuccessCallback();
+                            agreementsSuccessCallback();
+                            resolveParent(deployerResponse);
+                        }
                     }).
                     error(function (err) {
                         damErrorCallback();
