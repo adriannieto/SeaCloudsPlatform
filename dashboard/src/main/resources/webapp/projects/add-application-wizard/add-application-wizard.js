@@ -51,43 +51,58 @@ angular.module('seacloudsDashboard.projects.addApplicationWizard', ['ngRoute', '
         $scope.deployApplication = function () {
 
             var damSuccessCb = function (futureEntity) {
-                $scope.applicationWizardData.wizardLog += "Starting the deployment process...";
+                $scope.applicationWizardData.wizardLog += "Sending application to the Deployer...";
                 $scope.applicationWizardData.wizardLog += "\t Done. \n";
+
                 $scope.applicationWizardData.id = futureEntity.entityId;
+
+                $scope.applicationWizardData.wizardLog += "Retrieving application deployment status...";
+                $scope.applicationWizardData.wizardLog += "\t Done. \n";
+
+                $scope.applicationWizardData.wizardLog += "Installing Monitoring Rules...";
+
             }
 
             var damFailCb = function () {
-                $scope.applicationWizardData.wizardLog += "Starting the deployment process...";
+                $scope.applicationWizardData.wizardLog += "Sending application to the Deployer...";
                 $scope.applicationWizardData.wizardLog += "\t ERROR. \n";
             }
 
 
             var rulesSuccessCb = function () {
-                $scope.applicationWizardData.wizardLog += "Installing Monitoring Rules...";
-                $scope.applicationWizardData.wizardLog += "\t Done. \n";
+                if($scope.applicationWizardData.finalSlaRules && !$scope.applicationWizardData.finalMonitoringRules){
+                    $scope.applicationWizardData.wizardLog += "\t Done. \n";
+                }else{
+                    $scope.applicationWizardData.wizardLog += "\t Skipped. \n";
+                }
+
+                $scope.applicationWizardData.wizardLog += "Installing Service Level Agreements...";
             }
 
             var rulesFailCb = function () {
-                $scope.applicationWizardData.wizardLog += "Installing Monitoring Rules...";
                 $scope.applicationWizardData.wizardLog += "\t ERROR. \n";
             }
 
             var agreementSuccessCb = function () {
-                $scope.applicationWizardData.wizardLog += "Installing Service Level Agreements...";
-                $scope.applicationWizardData.wizardLog += "\t Done. \n";
+                if($scope.applicationWizardData.finalSlaRules && !$scope.applicationWizardData.finalMonitoringRules){
+                    $scope.applicationWizardData.wizardLog += "\t Done. \n";
+                }else{
+                    $scope.applicationWizardData.wizardLog += "\t Skipped. \n";
+                }
             }
 
             var agreementFailCb = function () {
-                $scope.applicationWizardData.wizardLog += "Installing Service Level Agreements...";
                 $scope.applicationWizardData.wizardLog += "\t ERROR. \n";
             }
+
+            $scope.applicationWizardData.wizardLog += "** Please wait until the process finishes **\n\n";
 
 
             $scope.SeaCloudsApi.addProject($scope.applicationWizardData.finalDam, damSuccessCb, damFailCb, $scope.applicationWizardData.finalMonitoringRules, rulesSuccessCb, rulesFailCb,
                 $scope.applicationWizardData.finalSlaRules, agreementSuccessCb, agreementFailCb).
                 success(function (data) {
                     $scope.applicationWizardData.wizardLog += "\n\n";
-                    $scope.applicationWizardData.wizardLog += "The application deployment process was triggered succesfully*. \n";
+                    $scope.applicationWizardData.wizardLog += "The application deployment process was triggered successfully*. \n";
                     $scope.applicationWizardData.wizardLog += "* Please notice that although the wizard finished the application runtime" +
                         "failures could happen please go to the status view in order to verify " +
                         "that everything is running properly"
@@ -96,7 +111,6 @@ angular.module('seacloudsDashboard.projects.addApplicationWizard', ['ngRoute', '
                     $scope.applicationWizardData.wizardLog += "\n\n";
                     $scope.applicationWizardData.wizardLog += "Something wrong happened!\n";
                     $scope.applicationWizardData.wizardLog += "Please restart the process and try again\n";
-                    $scope.applicationWizardData.wizardLog += "All the changes were reverted.\n";
                 })
         }
 
