@@ -673,7 +673,7 @@ var Canvas = (function() {
         }
         for (var i = 0; i < links.length; i++) {
             var link = links[i].toJson();
-            link.behaviour = g_links[i].behaviour;
+            link.behaviour = links[i].behaviour;
             result.links.push(link);
         }
         return result;
