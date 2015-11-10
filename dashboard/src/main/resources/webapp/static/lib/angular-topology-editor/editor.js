@@ -109,7 +109,7 @@ var Editor = (function() {
 
     var benchmark_platforms = {
         "": "",
-        "hp_cloud_services.2xl": "hp_cloud_services.2xl"
+        "Amazon_EC2_m3_xlarge_ap_northeast_1": "Amazon_EC2_m3_xlarge_ap_northeast_1"
     };
 
     /*

@@ -49,7 +49,6 @@ angular.module('seacloudsDashboard.projects.project.sla', [])
             .success(function (agreement) {
                 $scope.agreement = agreement;
             }).error(function () {
-                notificationService.error("An error occurred while retrieving the SLAs")
             })
 
 
