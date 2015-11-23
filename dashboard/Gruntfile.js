@@ -48,6 +48,20 @@ module.exports = function (grunt) {
             },
         },
 
+        jshint: {
+            options: {
+                curly: true,
+                eqeqeq: true,
+                eqnull: true,
+                browser: true,
+                globals: {
+                    jQuery: true
+                },
+            },
+            all: [srcDirectory + '/**/*.js'],
+
+        },
+
         useminPrepare: {
             html: [srcDirectory + 'index.html'],
             options: {
@@ -67,5 +81,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.registerTask('default', ['wiredep', 'copy', 'useminPrepare', 'concat', 'uglify', 'cssmin', 'usemin']);
+    grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.registerTask('default', ['wiredep', 'copy', 'jshint', 'useminPrepare', 'concat', 'uglify', 'cssmin', 'usemin']);
 };
