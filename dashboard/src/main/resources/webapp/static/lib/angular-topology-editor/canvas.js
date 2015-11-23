@@ -671,9 +671,9 @@ var Canvas = (function() {
             node.behaviour = g_nodes[i].behaviour;
             result.nodes.push(node);
         }
-        for (var i = 0; i < links.length; i++) {
-            var link = links[i].toJson();
-            link.behaviour = links[i].behaviour;
+        for (var j = 0; i < links.length; j++) {
+            var link = links[j].toJson();
+            link.behaviour = links[j].behaviour;
             result.links.push(link);
         }
         return result;
@@ -691,8 +691,8 @@ var Canvas = (function() {
             nodesmap[node.name] = node;
         }
 
-        for (var i = 0; i < json.links.length; i++) {
-            var jsonlink = json.links[i];
+        for (var j = 0; j < json.links.length; j++) {
+            var jsonlink = json.links[j];
             var link = linkfromjson(jsonlink, nodesmap);
             this.addlink(link);
         }

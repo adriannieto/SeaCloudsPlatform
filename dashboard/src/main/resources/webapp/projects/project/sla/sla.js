@@ -14,95 +14,95 @@
  *      See the License for the specific language governing permissions and
  *      limitations under the License.
  */
+(function () {
+    'use strict';
+    angular.module('seacloudsDashboard.projects.project.sla', [])
+        .directive('sla', function () {
+            return {
+                restrict: 'E',
+                templateUrl: 'projects/project/sla/sla.html',
+                controller: 'SlaCtrl'
+            };
+        })
+        .controller('SlaCtrl', function ($scope, $interval, notificationService, DTOptionsBuilder) {
 
-'use strict';
-
-angular.module('seacloudsDashboard.projects.project.sla', [])
-    .directive('sla', function () {
-        return {
-            restrict: 'E',
-            templateUrl: 'projects/project/sla/sla.html',
-            controller: 'SlaCtrl'
-        };
-    })
-    .controller('SlaCtrl', function ($scope, $interval, notificationService, DTOptionsBuilder) {
-
-        $scope.dtOptions = DTOptionsBuilder.newOptions().withDisplayLength(3);
-
-
-        $scope.agreement = undefined;
-        $scope.terms = undefined;
-
-        $scope.SeaCloudsApi.getAgreementStatus($scope.project.id).
-            success(function (value) {
-                $scope.terms = value;
-            }).
-            error(function () {
-                // Handle error
-            });
-
-        $scope.SeaCloudsApi.getAgreements($scope.project.id)
-            .success(function (agreement) {
-                $scope.agreement = agreement;
-            }).error(function () {
-                notificationService.error("An error occurred while retrieving the SLAs");
-            });
+            $scope.dtOptions = DTOptionsBuilder.newOptions().withDisplayLength(3);
 
 
-        $scope.updateFunction = undefined;
-        $scope.updateFunction = $interval(function () {
+            $scope.agreement = undefined;
+            $scope.terms = undefined;
+
             $scope.SeaCloudsApi.getAgreementStatus($scope.project.id).
                 success(function (value) {
                     $scope.terms = value;
                 }).
-                error(function (value) {
+                error(function () {
                     // Handle error
                 });
-        }, 5000);
 
-        $scope.$on('$destroy', function () {
-            if ($scope.updateFunction) {
-                $interval.cancel($scope.updateFunction);
-            }
+            $scope.SeaCloudsApi.getAgreements($scope.project.id)
+                .success(function (agreement) {
+                    $scope.agreement = agreement;
+                }).error(function () {
+                    notificationService.error("An error occurred while retrieving the SLAs");
+                });
+
+
+            $scope.updateFunction = undefined;
+            $scope.updateFunction = $interval(function () {
+                $scope.SeaCloudsApi.getAgreementStatus($scope.project.id).
+                    success(function (value) {
+                        $scope.terms = value;
+                    }).
+                    error(function (value) {
+                        // Handle error
+                    });
+            }, 5000);
+
+            $scope.$on('$destroy', function () {
+                if ($scope.updateFunction) {
+                    $interval.cancel($scope.updateFunction);
+                }
+            });
+
+            var selectedSLA = 0;
+            var slaSetupActive = false;
+
+            $scope.isSLASettingVisible = function () {
+                return slaSetupActive;
+            };
+
+            $scope.showSLASettings = function (status) {
+                slaSetupActive = status;
+            };
+
+            $scope.viewSLATerm = function (index) {
+                selectedSLA = index;
+            };
+
+            $scope.getActiveTermIndex = function () {
+                return selectedSLA;
+            };
+
+
+            $scope.getSlaTermQoS = function (index) {
+                if ($scope.agreement) {
+                    var obj = JSON.parse($scope.agreement.terms.allTerms.guaranteeTerms[index].serviceLevelObjetive.kpitarget.customServiceLevel);
+                    return obj.qos;
+                } else {
+                    return "Not available yet";
+                }
+            };
+
+            $scope.getSlaTermConstrain = function (index) {
+
+                if ($scope.agreement) {
+                    var obj = JSON.parse($scope.agreement.terms.allTerms.guaranteeTerms[index].serviceLevelObjetive.kpitarget.customServiceLevel);
+                    return obj.constraint;
+                } else {
+                    return "Not available yet";
+                }
+            };
+
         });
-
-        var selectedSLA = 0;
-        var slaSetupActive = false;
-
-        $scope.isSLASettingVisible = function () {
-            return slaSetupActive;
-        };
-
-        $scope.showSLASettings = function (status) {
-            slaSetupActive = status;
-        };
-
-        $scope.viewSLATerm = function (index) {
-            selectedSLA = index;
-        };
-
-        $scope.getActiveTermIndex = function () {
-            return selectedSLA;
-        };
-
-
-        $scope.getSlaTermQoS = function (index) {
-            if($scope.agreement) {
-                var obj = JSON.parse($scope.agreement.terms.allTerms.guaranteeTerms[index].serviceLevelObjetive.kpitarget.customServiceLevel);
-                return obj.qos;
-            }else{
-                return "Not available yet";
-            }
-        };
-        
-        $scope.getSlaTermConstrain = function (index) {
-            
-            if($scope.agreement){
-                var obj = JSON.parse($scope.agreement.terms.allTerms.guaranteeTerms[index].serviceLevelObjetive.kpitarget.customServiceLevel);
-                return obj.constraint;
-            }else{
-                return "Not available yet";
-            }
-        };
-
-    });
+})();

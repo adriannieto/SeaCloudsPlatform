@@ -14,13 +14,13 @@
  *      See the License for the specific language governing permissions and
  *      limitations under the License.
  */
-
-'use strict';
-
-angular.module('seacloudsDashboard.footer', [])
-    .directive('footer', function(){
-        return {
-            restrict: 'E',
-            templateUrl: 'footer/footer.html'
-        };
-    });
+(function () {
+    'use strict';
+    angular.module('seacloudsDashboard.footer', [])
+        .directive('footer', function () {
+            return {
+                restrict: 'E',
+                templateUrl: 'footer/footer.html'
+            };
+        });
+})();

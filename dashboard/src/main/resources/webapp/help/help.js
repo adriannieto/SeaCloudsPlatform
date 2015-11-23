@@ -14,15 +14,15 @@
  *      See the License for the specific language governing permissions and
  *      limitations under the License.
  */
-
-'use strict';
-
-angular.module('seacloudsDashboard.help', ['ngRoute'])
-    .config(['$routeProvider', function($routeProvider) {
-        $routeProvider.when('/help', {
-            templateUrl: 'help/help.html'
+(function () {
+    'use strict';
+    angular.module('seacloudsDashboard.help', ['ngRoute'])
+        .config(['$routeProvider', function ($routeProvider) {
+            $routeProvider.when('/help', {
+                templateUrl: 'help/help.html'
+            });
+        }])
+        .controller('HelpCtrl', function ($scope) {
+            $scope.Page.setTitle('SeaClouds Dashboard - Help');
         });
-    }])
-    .controller('HelpCtrl', function($scope){
-        $scope.Page.setTitle('SeaClouds Dashboard - Help');
-    });
+})();

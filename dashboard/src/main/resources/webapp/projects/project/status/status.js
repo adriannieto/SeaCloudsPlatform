@@ -14,43 +14,42 @@
  *      See the License for the specific language governing permissions and
  *      limitations under the License.
  */
+(function () {
+    'use strict';
+    angular.module('seacloudsDashboard.projects.project.status', ['datatables'])
+        .directive('status', function () {
+            return {
+                restrict: 'E',
+                templateUrl: 'projects/project/status/status.html',
+                controller: 'StatusCtrl'
+            };
+        })
+        .controller('StatusCtrl', function ($scope, $interval, DTOptionsBuilder, notificationService) {
 
-'use strict';
+            $scope.entities = undefined;
 
-
-angular.module('seacloudsDashboard.projects.project.status', ['datatables'])
-    .directive('status', function () {
-        return {
-            restrict: 'E',
-            templateUrl: 'projects/project/status/status.html',
-            controller: 'StatusCtrl'
-        };
-    })
-    .controller('StatusCtrl', function ($scope, $interval, DTOptionsBuilder, notificationService) {
-
-        $scope.entities = undefined;
-
-        $scope.SeaCloudsApi.getSensors($scope.project.id).
-            success(function(data){
-                $scope.entities = data;
-            }).
-            error(function(){
-                //TODO: Handle the error better thwan showing a notification
-                notificationService.error("Unable to retrieve the sensors");
-            });
+            $scope.SeaCloudsApi.getSensors($scope.project.id).
+                success(function (data) {
+                    $scope.entities = data;
+                }).
+                error(function () {
+                    //TODO: Handle the error better thwan showing a notification
+                    notificationService.error("Unable to retrieve the sensors");
+                });
 
 
-        $scope.dtOptions = DTOptionsBuilder.newOptions().withDisplayLength(5);
+            $scope.dtOptions = DTOptionsBuilder.newOptions().withDisplayLength(5);
 
-        var statusSetupActive = false;
+            var statusSetupActive = false;
 
-        $scope.isStatusSettingVisible = function(){
-            return statusSetupActive;
-        };
+            $scope.isStatusSettingVisible = function () {
+                return statusSetupActive;
+            };
 
-        $scope.showStatusSettings = function(status){
-            statusSetupActive = status;
-        };
+            $scope.showStatusSettings = function (status) {
+                statusSetupActive = status;
+            };
 
-        $scope.topology = TopologyEditorUtils.getTopologyFromEntities($scope.project);
-    });
+            $scope.topology = TopologyEditorUtils.getTopologyFromEntities($scope.project);
+        });
+})();

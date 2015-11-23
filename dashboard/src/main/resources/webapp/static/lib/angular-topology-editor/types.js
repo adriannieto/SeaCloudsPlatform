@@ -32,7 +32,7 @@ var Types = function() {
         name : "Database",
         label : "DB",
         type : "Database",
-        icon : "\uf1c0",
+        icon : "\uf1c0"
     });
     
     
@@ -40,7 +40,7 @@ var Types = function() {
         name : "BasicApplication",
         label : "app",
         type : "BasicApplication",
-        icon : "\uf1b3",
+        icon : "\uf1b3"
     });
 
 
@@ -48,28 +48,28 @@ var Types = function() {
         name : "Host",
         label : "host",
         type : "Host",
-        icon : "\uf233",
+        icon : "\uf233"
     });
 
     var WebApplication = Object.create(Graph.Node).init({
         name : "WebApplication",
         label : "www",
         type : "WebApplication",
-        icon : "\uf0ac",
+        icon : "\uf0ac"
     });
 
 
     var RestService = Object.create(Graph.Node).init({
         name : "REST Service",
         label : "REST",
-        type : "RestService",
+        type : "RestService"
     });
     
 
     var NoSql = Object.create(Graph.Node).init({
         name : "NoSQL Database",
         label : "NoSQL",
-        type : "NoSQL",
+        type : "NoSQL"
     });
     
     var ApplicationServer = Object.create(Graph.Node).init({
@@ -100,7 +100,7 @@ var Types = function() {
         name : "Cloud",
         label : "Cloud",
         type : "Cloud",
-        icon : "\uf0c2",
+        icon : "\uf0c2"
     });
     
 

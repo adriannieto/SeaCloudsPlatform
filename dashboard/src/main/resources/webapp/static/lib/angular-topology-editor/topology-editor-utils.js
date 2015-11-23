@@ -14,8 +14,8 @@
  *      See the License for the specific language governing permissions and
  *      limitations under the License.
  */
-'use strict';
 var TopologyEditorUtils = (function() {
+    'use strict';
 
     var brooklynToTopologyTranslator = function(brooklynEntity) {
         var parentTopology = {
@@ -24,15 +24,15 @@ var TopologyEditorUtils = (function() {
         }
 
         if (brooklynEntity) {
-            var type = undefined;
+            var type;
             if(brooklynEntity.type.search("database") >= 0){
-                type = "Database"
+                type = "Database";
             }else if(brooklynEntity.type.search("webapp") >= 0){
-                type = "WebApplication"
+                type = "WebApplication";
             }else if(brooklynEntity.type.search("SameServerEntity") >= 0){
-                type = "Host"
+                type = "Host";
             }else {
-                type = "BasicApplication"
+                type = "BasicApplication";
             }
 
             parentTopology.nodes.push(
@@ -43,7 +43,7 @@ var TopologyEditorUtils = (function() {
                         status: brooklynEntity.serviceState
                     },
                     type : type
-                })
+                });
 
             if (brooklynEntity.children) {
                 brooklynEntity.children.forEach(function (childEntity) {
@@ -51,12 +51,12 @@ var TopologyEditorUtils = (function() {
                         source: brooklynEntity.name,
                         target: childEntity.name,
                         properties: {}
-                    })
+                    });
 
                     var childTopology = brooklynToTopologyTranslator(childEntity);
                     parentTopology.nodes = parentTopology.nodes.concat(childTopology.nodes);
                     parentTopology.links = parentTopology.links.concat(childTopology.links);
-                })
+                });
             }
         }
         return parentTopology;
@@ -64,5 +64,5 @@ var TopologyEditorUtils = (function() {
 
     return {
         getTopologyFromEntities: brooklynToTopologyTranslator
-    }
+    };
 })()

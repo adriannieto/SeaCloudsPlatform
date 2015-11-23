@@ -40,8 +40,8 @@
                             }
                         };
 
-                        canvasOptions.height = document.getElementById(scope.randomId).parentNode.offsetHeight
-                        canvasOptions.width = document.getElementById(scope.randomId).parentNode.offsetWidth
+                        canvasOptions.height = document.getElementById(scope.randomId).parentNode.offsetHeight;
+                        canvasOptions.width = document.getElementById(scope.randomId).parentNode.offsetWidth;
 
                         var canvas = Canvas();
                         canvas.init(scope.randomId, canvasOptions);
@@ -73,7 +73,7 @@
                         elem.html('<div class="canvas-container"><div id="' + uniqid + '"></div></div>');
 
                         var canvasOptions = {};
-                        canvasOptions.height = elem.children()[0].offsetHeight
+                        canvasOptions.height = elem.children()[0].offsetHeight;
                         canvasOptions.width = elem.children()[0].offsetWidth;
 
                         scope.canvas = Canvas();
@@ -84,7 +84,7 @@
                             Status.fromjson(scope.topology);
                             scope.canvas.restart();
                         });
-                    }
+                    };
 
                     $timeout(function () {
                         scope.initCanvas();
