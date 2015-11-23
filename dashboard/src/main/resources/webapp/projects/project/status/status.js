@@ -28,7 +28,7 @@ angular.module('seacloudsDashboard.projects.project.status', ['datatables'])
     })
     .controller('StatusCtrl', function ($scope, $interval, DTOptionsBuilder, notificationService) {
 
-        $scope.entities = undefined
+        $scope.entities = undefined;
 
         $scope.SeaCloudsApi.getSensors($scope.project.id).
             success(function(data){
@@ -46,11 +46,11 @@ angular.module('seacloudsDashboard.projects.project.status', ['datatables'])
 
         $scope.isStatusSettingVisible = function(){
             return statusSetupActive;
-        }
+        };
 
         $scope.showStatusSettings = function(status){
             statusSetupActive = status;
-        }
+        };
 
         $scope.topology = TopologyEditorUtils.getTopologyFromEntities($scope.project);
     });

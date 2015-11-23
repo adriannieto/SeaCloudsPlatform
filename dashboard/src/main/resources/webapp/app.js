@@ -31,7 +31,7 @@ var seacloudsDashboard = angular.module('seacloudsDashboard', [
 ]);
 
 seacloudsDashboard.config(['$routeProvider', function ($routeProvider) {
-    $routeProvider.when("/", {redirectTo: '/projects'})
+    $routeProvider.when("/", {redirectTo: '/projects'});
     //TODO: Create a not available view
     $routeProvider.otherwise({redirectTo: '/not-available.html'});
 }]);
@@ -61,7 +61,7 @@ seacloudsDashboard.factory('UserCredentials', function ($location) {
             return authenticatedUser;
         },
         isUserAuthenticated: function () {
-            return !(!authenticatedUser)
+            return !(!authenticatedUser);
         },
         login: function (userCredentials) {
             authenticatedUser = {
@@ -89,7 +89,7 @@ seacloudsDashboard.factory('SeaCloudsApi', function ($http) {
                 $http.get("/api/deployer/applications").
                     success(function (data) {
                         var project = data.filter(function (project) {
-                            return project.id == id;
+                            return project.id === id;
                         })[0];
                         resolve(project);
                     }).
@@ -100,12 +100,12 @@ seacloudsDashboard.factory('SeaCloudsApi', function ($http) {
             promise.success = function (fn) {
                 promise.then(fn);
                 return promise;
-            }
+            };
 
             promise.error = function (fn) {
                 promise.then(null, fn);
                 return promise;
-            }
+            };
 
             return promise;
         },
@@ -121,7 +121,7 @@ seacloudsDashboard.factory('SeaCloudsApi', function ($http) {
                 $http.post("/api/deployer/applications", dam).
                     success(function (response) {
                         deployerResponse = response;
-                        damSuccessCallback(response)
+                        damSuccessCallback(response);
 
                         // Deploy monitor rules
                         $http.post("/api/monitor/rules", monitoringRules).
@@ -142,29 +142,29 @@ seacloudsDashboard.factory('SeaCloudsApi', function ($http) {
                                         //TODO: Rollback monitoring rules + monitor model + deployed app
                                         agreementsErrorCallback();
                                         rejectParent(err);
-                                    })
+                                    });
                             }).
                             error(function (err) {
                                 //TODO: Rollback monitor model + deployed app
                                 monitoringRulesErrorCallback();
                                 rejectParent(err);
-                            })
+                            });
                     }).
                     error(function (err) {
                         damErrorCallback();
                         rejectParent(err);
-                    })
+                    });
 
             });
             promise.success = function (fn) {
                 promise.then(fn);
                 return promise;
-            }
+            };
 
             promise.error = function (fn) {
                 promise.then(null, fn);
                 return promise;
-            }
+            };
 
             return promise;
 
@@ -186,12 +186,12 @@ seacloudsDashboard.factory('SeaCloudsApi', function ($http) {
             promise.success = function (fn) {
                 promise.then(fn);
                 return promise;
-            }
+            };
 
             promise.error = function (fn) {
                 promise.then(null, fn);
                 return promise;
-            }
+            };
 
             return promise;
         },
@@ -208,12 +208,12 @@ seacloudsDashboard.factory('SeaCloudsApi', function ($http) {
             promise.success = function (fn) {
                 promise.then(fn);
                 return promise;
-            }
+            };
 
             promise.error = function (fn) {
                 promise.then(null, fn);
                 return promise;
-            }
+            };
 
             return promise;
         },
@@ -230,12 +230,12 @@ seacloudsDashboard.factory('SeaCloudsApi', function ($http) {
             promise.success = function (fn) {
                 promise.then(fn);
                 return promise;
-            }
+            };
 
             promise.error = function (fn) {
                 promise.then(null, fn);
                 return promise;
-            }
+            };
 
             return promise;
         },
@@ -254,12 +254,12 @@ seacloudsDashboard.factory('SeaCloudsApi', function ($http) {
             promise.success = function (fn) {
                 promise.then(fn);
                 return promise;
-            }
+            };
 
             promise.error = function (fn) {
                 promise.then(null, fn);
                 return promise;
-            }
+            };
 
             return promise;
         },
@@ -271,17 +271,17 @@ seacloudsDashboard.factory('SeaCloudsApi', function ($http) {
                     }).
                     error(function (err) {
                         reject(Error(err));
-                    })
+                    });
             });
             promise.success = function (fn) {
                 promise.then(fn);
                 return promise;
-            }
+            };
 
             promise.error = function (fn) {
                 promise.then(null, fn);
                 return promise;
-            }
+            };
 
             return promise;
         },
@@ -293,17 +293,17 @@ seacloudsDashboard.factory('SeaCloudsApi', function ($http) {
                     }).
                     error(function (err) {
                         reject(Error(err));
-                    })
+                    });
             });
             promise.success = function (fn) {
                 promise.then(fn);
                 return promise;
-            }
+            };
 
             promise.error = function (fn) {
                 promise.then(null, fn);
                 return promise;
-            }
+            };
 
             return promise;
         },
@@ -315,17 +315,17 @@ seacloudsDashboard.factory('SeaCloudsApi', function ($http) {
                     }).
                     error(function (err) {
                         reject(Error(err));
-                    })
+                    });
             });
             promise.success = function (fn) {
                 promise.then(fn);
                 return promise;
-            }
+            };
 
             promise.error = function (fn) {
                 promise.then(null, fn);
                 return promise;
-            }
+            };
 
             return promise;
         },
@@ -337,17 +337,17 @@ seacloudsDashboard.factory('SeaCloudsApi', function ($http) {
                     }).
                     error(function (err) {
                         reject(Error(err));
-                    })
+                    });
             });
             promise.success = function (fn) {
                 promise.then(fn);
                 return promise;
-            }
+            };
 
             promise.error = function (fn) {
                 promise.then(null, fn);
                 return promise;
-            }
+            };
 
             return promise;
         }
@@ -355,7 +355,7 @@ seacloudsDashboard.factory('SeaCloudsApi', function ($http) {
 });
 
 
-seacloudsDashboard.controller('GlobalCtrl', function ($scope, Page, UserCredentials, SeaCloudsApi) {
+seacloudsDashboard.controller('GlobalCtrl', function ($scope, $location, Page, UserCredentials, SeaCloudsApi) {
     $scope.Page = Page;
     $scope.UserCredentials = UserCredentials;
     $scope.SeaCloudsApi = SeaCloudsApi;

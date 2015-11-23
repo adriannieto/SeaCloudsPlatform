@@ -21,7 +21,7 @@ angular.module('seacloudsDashboard.projects.addApplicationWizard', ['ngRoute', '
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/add-application-wizard', {
             templateUrl: 'projects/add-application-wizard/add-application-wizard.html'
-        })
+        });
     }])
     .controller('AddApplicationWizardCtrl', function ($scope, notificationService) {
         $scope.applicationWizardData = {
@@ -45,7 +45,7 @@ angular.module('seacloudsDashboard.projects.addApplicationWizard', ['ngRoute', '
                 "links": []
             },
             brooklynApplication: undefined
-        }
+        };
 
 
         $scope.deployApplication = function () {
@@ -54,57 +54,57 @@ angular.module('seacloudsDashboard.projects.addApplicationWizard', ['ngRoute', '
                 $scope.applicationWizardData.wizardLog += "Starting the deployment process...";
                 $scope.applicationWizardData.wizardLog += "\t Done. \n";
                 $scope.applicationWizardData.id = futureEntity.entityId;
-            }
+            };
 
             var damFailCb = function () {
                 $scope.applicationWizardData.wizardLog += "Starting the deployment process...";
                 $scope.applicationWizardData.wizardLog += "\t ERROR. \n";
-            }
+            };
 
 
             var rulesSuccessCb = function () {
                 $scope.applicationWizardData.wizardLog += "Installing Monitoring Rules...";
                 $scope.applicationWizardData.wizardLog += "\t Done. \n";
-            }
+            };
 
             var rulesFailCb = function () {
                 $scope.applicationWizardData.wizardLog += "Installing Monitoring Rules...";
                 $scope.applicationWizardData.wizardLog += "\t ERROR. \n";
-            }
+            };
 
             var agreementSuccessCb = function () {
                 $scope.applicationWizardData.wizardLog += "Installing Service Level Agreements...";
                 $scope.applicationWizardData.wizardLog += "\t Done. \n";
-            }
+            };
 
             var agreementFailCb = function () {
                 $scope.applicationWizardData.wizardLog += "Installing Service Level Agreements...";
                 $scope.applicationWizardData.wizardLog += "\t ERROR. \n";
-            }
+            };
 
 
             $scope.SeaCloudsApi.addProject($scope.applicationWizardData.finalDam, damSuccessCb, damFailCb, $scope.applicationWizardData.finalMonitoringRules, rulesSuccessCb, rulesFailCb,
                 $scope.applicationWizardData.finalSlaRules, agreementSuccessCb, agreementFailCb).
-                success(function (data) {
+                success(function () {
                     $scope.applicationWizardData.wizardLog += "\n\n";
                     $scope.applicationWizardData.wizardLog += "The application deployment process was triggered succesfully*. \n";
                     $scope.applicationWizardData.wizardLog += "* Please notice that although the wizard finished the application runtime" +
                         "failures could happen please go to the status view in order to verify " +
-                        "that everything is running properly"
+                        "that everything is running properly";
                 }).
-                error(function (data) {
+                error(function () {
                     $scope.applicationWizardData.wizardLog += "\n\n";
                     $scope.applicationWizardData.wizardLog += "Something wrong happened!\n";
                     $scope.applicationWizardData.wizardLog += "Please restart the process and try again\n";
                     $scope.applicationWizardData.wizardLog += "All the changes were reverted.\n";
-                })
-        }
+                });
+        };
 
         $scope.steps = ['Application properties', 'Design topology',
             'Optimize & Plan', 'Configuration summary', 'Process Summary & Deploy'];
         $scope.currentStep = 1;
         $scope.isSelected = function (step) {
-            return $scope.currentStep == step;
+            return $scope.currentStep === step;
         };
         $scope.getStepCount = function () {
 
@@ -130,6 +130,7 @@ angular.module('seacloudsDashboard.projects.addApplicationWizard', ['ngRoute', '
                     $scope.damGenerated = false;
                     break;
                 case 5:
+                    break;
                 default:
                     break;
             }
@@ -163,15 +164,15 @@ angular.module('seacloudsDashboard.projects.addApplicationWizard', ['ngRoute', '
                     break;
                 case 3:
                     $scope.SeaCloudsApi.getDam($scope.applicationWizardData.finalAdp).
-                        success(function(dam){
+                        success(function (dam) {
                             $scope.applicationWizardData.finalDam = dam;
                             $scope.damGenerated = true;
                         }).
-                        error(function(){
+                        error(function () {
                             $scope.applicationWizardData.finalDam = "";
                             $scope.damGenerated = true;
                             notificationService.error('The DAM failed to generate the DAM, please fill it manually');
-                        })
+                        });
                     notificationService.notify('The DAM Generator is still under development. The autogenerated DAM could be not deployable.');
                     $scope.currentStep++;
                     break;
@@ -180,6 +181,7 @@ angular.module('seacloudsDashboard.projects.addApplicationWizard', ['ngRoute', '
                     $scope.currentStep++;
                     break;
                 case 5:
+                    break;
                 default:
                     break;
             }
@@ -196,7 +198,7 @@ angular.module('seacloudsDashboard.projects.addApplicationWizard', ['ngRoute', '
                 case 5:
                     return false;
             }
-        }
+        };
 
         $scope.wizardCanContinue = function () {
             switch ($scope.currentStep) {
@@ -213,7 +215,7 @@ angular.module('seacloudsDashboard.projects.addApplicationWizard', ['ngRoute', '
                 case 5:
                     return true;
             }
-        }
+        };
 
         $scope.codemirrorFeasibleDamOptions = {
             mode: 'yaml',
@@ -224,18 +226,18 @@ angular.module('seacloudsDashboard.projects.addApplicationWizard', ['ngRoute', '
 
         $scope.codemirrorDamOptions = {
             mode: 'yaml',
-            lineNumbers: true,
+            lineNumbers: true
         };
 
 
         $scope.codemirrorSlaRulesOptions = {
             mode: 'xml',
-            lineNumbers: true,
+            lineNumbers: true
         };
 
         $scope.codeMirrorMonitoringRulesOptions = {
             mode: 'xml',
-            lineNumbers: true,
+            lineNumbers: true
         };
     })
     .directive('addApplicationWizard', function () {
@@ -257,7 +259,7 @@ angular.module('seacloudsDashboard.projects.addApplicationWizard', ['ngRoute', '
         return {
             restrict: 'E',
             templateUrl: 'projects/add-application-wizard/wizard-step-2.html',
-            scope: true,
+            scope: true
         };
     })
     .directive('wizardStep3', function () {
@@ -266,29 +268,29 @@ angular.module('seacloudsDashboard.projects.addApplicationWizard', ['ngRoute', '
             templateUrl: 'projects/add-application-wizard/wizard-step-3.html',
             scope: true,
             controller: function ($scope, $element) {
-                var MAX_ITEM_PER_PAGE = 3
+                var MAX_ITEM_PER_PAGE = 3;
                 var currentPage = 0;
                 $scope.getCurrentlyVisibleFeasibleAdps = function () {
                     $scope.MAX_PAGES = Math.floor($scope.applicationWizardData.feasibleAdps.length / MAX_ITEM_PER_PAGE);
                     return $scope.applicationWizardData.feasibleAdps.slice(currentPage * MAX_ITEM_PER_PAGE,
                         currentPage * MAX_ITEM_PER_PAGE + MAX_ITEM_PER_PAGE);
-                }
+                };
 
                 $scope.getCurrentPage = function () {
                     return currentPage;
-                }
+                };
 
                 $scope.nextPage = function () {
                     currentPage++;
-                }
+                };
 
                 $scope.previousPage = function () {
                     currentPage--;
-                }
+                };
 
                 $scope.setFinalAdp = function (finalAdp) {
                     $scope.applicationWizardData.finalAdp = finalAdp;
-                }
+                };
             }
         };
     })
@@ -310,19 +312,19 @@ angular.module('seacloudsDashboard.projects.addApplicationWizard', ['ngRoute', '
                     "links": []
                 },
 
-                    $scope.$watch('applicationWizardData.id', function (newValue) {
-                        if (newValue) {
-                            $scope.updateFunction = $interval(function () {
-                                $scope.SeaCloudsApi.getProject($scope.applicationWizardData.id).
-                                    success(function (project) {
-                                        $scope.applicationWizardData.brooklynAppTopology = TopologyEditorUtils.getTopologyFromEntities(project);
-                                    }).error(function () {
-                                        //TODO: Handle the error better than showing a notification
-                                        notificationService.error("Unable to retrieve the projects");
-                                    })
-                            }, 5000);
-                        }
-                    });
+                $scope.$watch('applicationWizardData.id', function (newValue) {
+                    if (newValue) {
+                        $scope.updateFunction = $interval(function () {
+                            $scope.SeaCloudsApi.getProject($scope.applicationWizardData.id).
+                                success(function (project) {
+                                    $scope.applicationWizardData.brooklynAppTopology = TopologyEditorUtils.getTopologyFromEntities(project);
+                                }).error(function () {
+                                    //TODO: Handle the error better than showing a notification
+                                    notificationService.error("Unable to retrieve the projects");
+                                });
+                        }, 5000);
+                    }
+                });
 
                 $scope.$on('$destroy', function () {
                     if ($scope.updateFunction) {
@@ -330,5 +332,5 @@ angular.module('seacloudsDashboard.projects.addApplicationWizard', ['ngRoute', '
                     }
                 });
             }
-        }
-    })
+        };
+    });

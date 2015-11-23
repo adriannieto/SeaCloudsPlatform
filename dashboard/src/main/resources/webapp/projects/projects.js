@@ -22,9 +22,9 @@ angular.module('seacloudsDashboard.projects', ['ngRoute', 'ngFitText',
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/projects', {
             templateUrl: 'projects/projects.html'
-        })
+        });
     }])
-    .controller('ProjectsCtrl', function ($scope, $interval, notificationService) {
+    .controller('ProjectsCtrl', function ($scope, $interval, $location, notificationService) {
 
         $scope.isViewActive = function (route) {
             return $location.path().startsWith(route);
@@ -43,7 +43,7 @@ angular.module('seacloudsDashboard.projects', ['ngRoute', 'ngFitText',
                 //TODO: Handle the error better than showing a notification
                 notificationService.error("Unable to retrieve the projects");
 
-            })
+            });
 
         $scope.updateFunction = $interval(function () {
             $scope.SeaCloudsApi.getProjects().
@@ -54,7 +54,7 @@ angular.module('seacloudsDashboard.projects', ['ngRoute', 'ngFitText',
                     //TODO: Handle the error better than showing a notification
                     notificationService.error("Unable to retrieve the projects");
 
-                })
+                });
         }, 5000);
 
         $scope.$on('$destroy', function () {
@@ -72,18 +72,18 @@ angular.module('seacloudsDashboard.projects', ['ngRoute', 'ngFitText',
             }else{
                 return appDown;
             }
-        }
+        };
 
         var slaOK = "The application is satisfying the SLA's";
         var slaFAILED = "There are some violations in SLA's";
 
         $scope.getSLATooltip = function (project) {
-            if (project.slaStatus == "OK") {
+            if (project.slaStatus === "OK") {
                 return slaOK;
             } else {
                 return slaFAILED;
             }
-        }
+        };
 
         var statusOK = "The application is running";
         var statusSTARTING = "The application is starting";
@@ -91,15 +91,14 @@ angular.module('seacloudsDashboard.projects', ['ngRoute', 'ngFitText',
         var statusFAILURE = "The application failed during the execution";
 
         $scope.getStatusTooltip = function (project) {
-            if (project.serviceState == "running") {
+            if (project.serviceState === "running") {
                 return statusOK;
-            } else if (project.serviceState == "starting") {
+            } else if (project.serviceState === "starting") {
                 return statusSTARTING;
-            } else if (project.serviceState == "reconfiguring") {
+            } else if (project.serviceState === "reconfiguring") {
                 return statusRECONFIGURING;
             } else {
                 return statusFAILURE;
             }
-
-        }
+        };
     });

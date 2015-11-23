@@ -14,9 +14,8 @@
  *      See the License for the specific language governing permissions and
  *      limitations under the License.
  */
-"use strict";
-
-var FormatValidator = (function(){
+var FormatValidator = (function(jsyaml){
+    "use strict";
     var validateYAML = function isValidYAML(yaml) {
         try {
             jsyaml.safeLoad(yaml);
@@ -24,7 +23,7 @@ var FormatValidator = (function(){
             return false;
         }
         return true;
-    }
+    };
 
    var validateJSON =  function isValidJSON(json) {
         try {
@@ -33,7 +32,7 @@ var FormatValidator = (function(){
             return false;
         }
         return true;
-    }
+    };
 
     // TODO: Enable IE support
    var validateXML = function isValidXML(xml) {
@@ -41,7 +40,7 @@ var FormatValidator = (function(){
         // attempt to parse the passed-in xml
         var dom = parser.parseFromString(xml, 'text/xml');
         return xml.length && !isParseError(dom);
-    }
+    };
 
     function isParseError(parsedDocument) {
         // parser and parsererrorNS could be cached on startup for efficiency
@@ -55,11 +54,11 @@ var FormatValidator = (function(){
         }
 
         return parsedDocument.getElementsByTagNameNS(parsererrorNS, 'parsererror').length > 0;
-    };
+    }
 
     return {
         validateYAML: validateYAML,
         validateJSON: validateJSON,
         validateXML: validateXML
-    }
-})();
+    };
+})(jsyaml);

@@ -34,7 +34,7 @@ angular.module('seacloudsDashboard.header', ["ngLoadingSpinner"])
                 //TODO: Handle the error better than showing a notification
                 notificationService.error("Unable to retrieve the projects");
 
-            })
+            });
 
         $scope.updateFunction = undefined;
 
@@ -47,7 +47,7 @@ angular.module('seacloudsDashboard.header', ["ngLoadingSpinner"])
                     //TODO: Handle the error better than showing a notification
                     notificationService.error("Unable to retrieve the projects");
 
-                })
+                });
         }, 5000);
 
         $scope.$on('$destroy', function () {
@@ -58,7 +58,7 @@ angular.module('seacloudsDashboard.header', ["ngLoadingSpinner"])
 
         $scope.isViewActive = function (route) {
             return $location.path().startsWith(route);
-        }
+        };
     })
     .directive('header', function () {
         return {

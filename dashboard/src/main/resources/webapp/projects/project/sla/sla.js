@@ -26,11 +26,7 @@ angular.module('seacloudsDashboard.projects.project.sla', [])
         };
     })
     .controller('SlaCtrl', function ($scope, $interval, notificationService, DTOptionsBuilder) {
-        $scope.slaInput = "Please load your file here...";
-        $scope.editorOptionsSLA = {
-            mode: 'xml',
-            lineNumbers: true
-        };
+
         $scope.dtOptions = DTOptionsBuilder.newOptions().withDisplayLength(3);
 
 
@@ -43,14 +39,14 @@ angular.module('seacloudsDashboard.projects.project.sla', [])
             }).
             error(function () {
                 // Handle error
-            })
+            });
 
         $scope.SeaCloudsApi.getAgreements($scope.project.id)
             .success(function (agreement) {
                 $scope.agreement = agreement;
             }).error(function () {
-                notificationService.error("An error occurred while retrieving the SLAs")
-            })
+                notificationService.error("An error occurred while retrieving the SLAs");
+            });
 
 
         $scope.updateFunction = undefined;
@@ -61,7 +57,7 @@ angular.module('seacloudsDashboard.projects.project.sla', [])
                 }).
                 error(function (value) {
                     // Handle error
-                })
+                });
         }, 5000);
 
         $scope.$on('$destroy', function () {
@@ -70,47 +66,24 @@ angular.module('seacloudsDashboard.projects.project.sla', [])
             }
         });
 
-        $scope.processSLA = function () {
-            if (isValidXML($scope.slaInput)) {
-                notificationService.success('Success!!!');
-                $scope.slaInput = "Please load your file here...";
-                $scope.showSLASettings(false);
-
-            } else {
-                notificationService.error('Bad syntax');
-            }
-
-        }
-
-        $scope.$watch('slaInputFile', function () {
-            if ($scope.slaInputFile) {
-                var r = new FileReader();
-                r.onload = function (e) {
-                    $scope.slaInput = e.target.result;
-                    $scope.$apply();
-                }
-                r.readAsText($scope.slaInputFile[0]);
-            }
-        });
-
         var selectedSLA = 0;
         var slaSetupActive = false;
 
         $scope.isSLASettingVisible = function () {
             return slaSetupActive;
-        }
+        };
 
         $scope.showSLASettings = function (status) {
             slaSetupActive = status;
-        }
+        };
 
         $scope.viewSLATerm = function (index) {
             selectedSLA = index;
-        }
+        };
 
         $scope.getActiveTermIndex = function () {
             return selectedSLA;
-        }
+        };
 
 
         $scope.getSlaTermQoS = function (index) {
@@ -118,9 +91,9 @@ angular.module('seacloudsDashboard.projects.project.sla', [])
                 var obj = JSON.parse($scope.agreement.terms.allTerms.guaranteeTerms[index].serviceLevelObjetive.kpitarget.customServiceLevel);
                 return obj.qos;
             }else{
-                return "Not available yet"
+                return "Not available yet";
             }
-        }
+        };
         
         $scope.getSlaTermConstrain = function (index) {
             
@@ -128,9 +101,8 @@ angular.module('seacloudsDashboard.projects.project.sla', [])
                 var obj = JSON.parse($scope.agreement.terms.allTerms.guaranteeTerms[index].serviceLevelObjetive.kpitarget.customServiceLevel);
                 return obj.constraint;
             }else{
-                return "Not available yet"
+                return "Not available yet";
             }
-
-        }
+        };
 
     });
