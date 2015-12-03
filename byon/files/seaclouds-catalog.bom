@@ -55,7 +55,7 @@ brooklyn.catalog:
       name: Dashboard
       brooklyn.config:
         runtimeFiles:
-          https://oss.sonatype.org/service/local/artifact/maven/redirect?r=snapshots&g=eu.seaclouds-project&a=planner-service&v=LATEST&e=jar : dashboard.jar
+          https://oss.sonatype.org/service/local/artifact/maven/redirect?r=snapshots&g=eu.seaclouds-project&a=dashboard&v=LATEST&e=jar : dashboard.jar
         dashboard.port: 8000
         deployer.host: 127.0.0.1
         deployer.port: 8081
