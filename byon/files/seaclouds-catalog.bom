@@ -8,45 +8,93 @@ brooklyn.catalog:
        type: org.apache.brooklyn.entity.software.base.VanillaSoftwareProcess
        id: planner
        name: Planner
-
        brooklyn.config:
          runtimeFiles:
            https://oss.sonatype.org/service/local/artifact/maven/redirect?r=snapshots&g=eu.seaclouds-project&a=planner-service&v=LATEST&e=jar : planner-service.jar
          planner.config.port: 1234
-         planner.config.discoverer.url: undefined
-         planner.config.optimizer.url: undefined
-         planner.config.monitor_generator.url: undefined
-         planner.config.sla_generator.url: undefined
+         planner.config.discovererURL: 127.0.0.1
+         planner.config.monitorGeneratorURL: 127.0.0.1
+         planner.config.monitorGeneratorPort: 8080
+         planner.config.slaGeneratorURL: 127.0.0.1
+         planner.config.filterOfferings: false
+         planner.config.deployableProviders: ["openstack-nova","openstack-keystone","openstack-nova-ec2", "byon", "sts", "elasticstack", "cloudstack", "rackspace-cloudidentity","aws-ec2","gogrid","elastichosts-lon-p","elastichosts-sat-p","elastichosts-lon-b","openhosting-east1","serverlove-z1-man","skalicloud-sdg-my","go2cloud-jhb1","softlayer","hpcloud-compute","rackspace-cloudservers-us","rackspace-cloudservers-uk","azurecompute","google-compute-engine","CloudFoundry"]
 
        shell.env:
          PLANNER_PORT: $brooklyn:config("planner.config.port")
-         DISCOVERER_URL: $brooklyn:config("planner.config.discoverer.url")
-         OPTIMIZER_URL: $brooklyn:config("planner.config.optimizer.url")
-         MONITOR_GENERATOR_URL: $brooklyn:config("planner.config.monitor_generator.url")
-         SLA_GENERATOR_URL: $brooklyn:config("planner.config.sla_generator.url")
+         DISCOVERER_URL: $brooklyn:config("planner.config.discovererURL")
+         MONITOR_GENERATOR_URL: $brooklyn:config("planner.config.monitorGeneratorURL")
+         MONITOR_GENERATOR_PORT: $brooklyn:config("planner.config.monitorGeneratorPort")
+         SLA_GENERATOR_URL: $brooklyn:config("planner.config.slaGeneratorURL")
+         FILTER_OFFERINGS: $brooklyn:config("planner.config.filterOfferings")
+         DEPLOYABLE_PROVIDERS: $brooklyn:config("planner.config.deployableProviders")
 
        provisioning.properties:
          osFamily: ubuntu
 
        launch.command: |
          sudo apt-get update
-         sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated tzdata openjdk-7-jdk curl
+         sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated tzdata openjdk-7-jre-headless curl
          tee ./conf.yml  <<EOF
          server:
            type: simple
-           applicationContextPath: /application
+           applicationContextPath: /planner
            adminContextPath: /admin
            connector:
-            type: http
-            port: ${PLANNER_PORT}
+             type: http
+             port: ${PLANNER_PORT}
          discovererURL: ${DISCOVERER_URL}
-         optimizerURL: ${OPTIMIZER_URL}
          monitorGeneratorURL: ${MONITOR_GENERATOR_URL}
+         monitorGeneratorPort: ${MONITOR_GENERATOR_PORT}
          slaGeneratorURL: ${SLA_GENERATOR_URL}
+         deployableProviders: ${DEPLOYABLE_PROVIDERS}
+         filterOfferings: ${FILTER_OFFERINGS}
          EOF
-
          nohup java -jar planner-service.jar server conf.yml > console.out 2>&1 &
          echo $! > $PID_FILE
+  - id: seaclouds-discoverer
+    name: "SeaClouds Discoverer"
+    description: "SeaClouds Discoverer server"
+    item:
+      type: org.apache.brooklyn.entity.software.base.VanillaSoftwareProcess
+      id: discoverer
+      name: Discoverer
+
+      brooklyn.config:
+        runtimeFiles:
+          https://oss.sonatype.org/service/local/artifact/maven/redirect?r=snapshots&g=eu.seaclouds-project&a=discoverer&v=LATEST&e=jar : discoverer.jar
+        discoverer.config.port: 1236
+        discoverer.config.repositoryPath: "~/offerings_repo"
+        discoverer.config.activeCrawlers: ["CloudHarmonyCrawler", "PaasifyCrawler"]
+        discoverer.config.remoteInitializationPath: ""
+
+      shell.env:
+        DISCOVERER_URL: $brooklyn:config("discoverer.url")
+        DISCOVERER_PORT: $brooklyn:config("discoverer.config.port")
+        DISCOVERER_ACTIVE_CRAWLERS: $brooklyn:config("discoverer.config.activeCrawlers")
+        DISCOVERER_REPOSITORY_PATH: $brooklyn:config("discoverer.config.repositoryPath")
+        DISCOVERER_REMOTE_INITIALIZATION_PATH: $brooklyn:config("discoverer.config.remoteInitializationPath")
+
+
+      provisioning.properties:
+        osFamily: ubuntu
+
+      launch.command: |
+        sudo apt-get update
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated tzdata openjdk-7-jre-headless curl
+        tee ./conf.yml  <<EOF
+        server:
+          type: simple
+          applicationContextPath: /application
+          adminContextPath: /admin
+          connector:
+           type: http
+           port: ${DISCOVERER_PORT}
+        activeCrawlers: ${DISCOVERER_ACTIVE_CRAWLERS}
+        repositoryPath: ${DISCOVERER_REPOSITORY_PATH}
+        remoteInitializationPath: ${DISCOVERER_REMOTE_INITIALIZATION_PATH}
+        EOF
+        nohup java -jar discoverer.jar server conf.yml > console.out 2>&1 &
+        echo $! > $PID_FILE
   - id: seaclouds-dashboard
     name: "SeaClouds Dashboard"
     description: "SeaClouds Dashboard server"
@@ -91,7 +139,7 @@ brooklyn.catalog:
 
       launch.command: |
         sudo apt-get update
-        sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated tzdata openjdk-7-jdk wget curl
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated tzdata openjdk-7-jre-headless curl
         tee ./conf.yml  <<EOF
         server:
           type: simple
@@ -117,7 +165,6 @@ brooklyn.catalog:
           host: ${PLANNER_HOST}
           port: ${PLANNER_PORT}
         EOF
-
         nohup java -jar dashboard.jar server conf.yml > console.out 2>&1 &
         echo $! > $PID_FILE
   - id: seaclouds-monitor-dda
@@ -143,7 +190,7 @@ brooklyn.catalog:
 
       launch.command: |
         sudo apt-get update
-        sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated tzdata openjdk-7-jdk wget > apt.log
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated tzdata openjdk-7-jre-headless wget > apt.log
         cd data-analyzer-${MONITOR_DDA_VERSION}
         nohup java -Xmx1200M -jar tower4clouds-data-analyzer.jar > %s 2>&1 &
         echo $! > $PID_FILE
@@ -174,7 +221,7 @@ brooklyn.catalog:
 
       launch.command: |
         sudo apt-get update
-        sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated tzdata openjdk-7-jdk wget > apt.log
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated tzdata openjdk-7-jre-headless wget > apt.log
         cd manager-server-${MONITOR_MANAGER_VERSION}
         nohup java -Xmx1200M -jar tower4clouds-manager.jar -daip ${MONITOR_DDA_HOST} -daport ${MONITOR_DDA_PORT} -mmport ${MONITOR_MANAGER_PORT} > console.out 2>&1 &
         echo $! > $PID_FILE
@@ -200,17 +247,6 @@ brooklyn.catalog:
             enricher.sourceSensor: $brooklyn:sensor("brooklynnode.webconsole.up")
             enricher.targetSensor: $brooklyn:sensor("service.process.isRunning")
             enricher.targetValue: $brooklyn:component("deployer").attributeWhenReady("brooklynnode.webconsole.up")
-  - id: seaclouds-discoverer
-    name: "SeaClouds Discoverer"
-    description: "SeaClouds Discoverer server"
-    item:
-      type: org.apache.brooklyn.entity.webapp.tomcat.TomcatServer
-      id: discoverer
-      name: Discoverer
-      war: https://oss.sonatype.org/service/local/artifact/maven/redirect?r=snapshots&g=eu.seaclouds-project&a=discoverer&v=LATEST&e=war
-
-      provisioning.properties:
-        osFamily: ubuntu
 
   - id: seaclouds-platform-on-byon
     name: "SeaClouds Platform on BYON"
@@ -230,7 +266,6 @@ brooklyn.catalog:
         name: SeaClouds Platform
         brooklyn.children:
         - type: seaclouds-dashboard
-          id: seaclouds-dashboard
           name: seaclouds-dashboard
           brooklyn.config:
             deployer.host: $brooklyn:component("deployer").attributeWhenReady("host.address")
@@ -241,10 +276,18 @@ brooklyn.catalog:
             monitor.manager.port: $brooklyn:component("monitor-manager").config("monitor.manager.port")
             planner.host: $brooklyn:component("planner").attributeWhenReady("host.address")
             planner.port: $brooklyn:component("planner").config("planner.config.port")
-          launch.latch: $brooklyn:component("planner").attributeWhenReady("service.isUp")
+          setup.latch: $brooklyn:component("planner").attributeWhenReady("service.isUp")
         - type: seaclouds-planner
           name: seaclouds-planner
-          install.latch: $brooklyn:component("deployer").attributeWhenReady("service.isUp")
+          brooklyn.config:
+            planner.config.discovererURL:  $brooklyn:formatString("http://%s:%s", $brooklyn:component("discoverer").attributeWhenReady("host.address"), $brooklyn:component("discoverer").config("discoverer.config.port"))
+            planner.config.monitorGeneratorURL:  $brooklyn:component("monitor-manager").attributeWhenReady("host.address")
+            planner.config.monitorGeneratorPort:  $brooklyn:component("monitor-manager").config("monitor.manager.port")
+            planner.config.slaGeneratorURL: $brooklyn:formatString("http://%s:%s", $brooklyn:component("sla-core").attributeWhenReady("host.address"), $brooklyn:component("sla-core").attributeWhenReady("http.port"))
+          setup.latch: $brooklyn:component("discoverer").attributeWhenReady("service.isUp")
+        - type: seaclouds-discoverer
+          name: seaclouds-discoverer
+          setup.latch: $brooklyn:component("deployer").attributeWhenReady("service.isUp")
         - type: seaclouds-deployer
           name: seaclouds-deployer
           setup.latch: $brooklyn:component("sla-core").attributeWhenReady("service.isUp")
@@ -266,13 +309,13 @@ brooklyn.catalog:
           id: sla-db
           brooklyn.config:
             creationScriptUrl: https://raw.githubusercontent.com/SeaCloudsEU/sla-core/e1d3bd4dec27236cfdefa1eae81d38db3dcd11da/sla-repository/src/main/resources/sql/01database.sql
-          install.latch: $brooklyn:component("monitor-manager").attributeWhenReady("service.isUp")
+          setup.latch: $brooklyn:component("monitor-manager").attributeWhenReady("service.isUp")
         - type: seaclouds-monitor-manager
           name: seaclouds-monitor-manager
           brooklyn.config:
             monitor.dda.host: $brooklyn:component("monitor-dda").attributeWhenReady("host.address")
             monitor.dda.port: $brooklyn:component("monitor-dda").config("monitor.dda.port")
-          install.latch: $brooklyn:component("monitor-dda").attributeWhenReady("service.isUp")
+          setup.latch: $brooklyn:component("monitor-dda").attributeWhenReady("service.isUp")
         - type: seaclouds-monitor-dda
           name: seaclouds-monitor-dda
 
@@ -290,7 +333,6 @@ brooklyn.catalog:
 
       services:
       - type: seaclouds-dashboard
-        id: seaclouds-dashboard
         name: seaclouds-dashboard
         brooklyn.config:
           deployer.host: $brooklyn:component("deployer").attributeWhenReady("host.address")
@@ -301,10 +343,19 @@ brooklyn.catalog:
           monitor.manager.port: $brooklyn:component("monitor-manager").config("monitor.manager.port")
           planner.host: $brooklyn:component("planner").attributeWhenReady("host.address")
           planner.port: $brooklyn:component("planner").config("planner.config.port")
-        launch.latch: $brooklyn:component("planner").attributeWhenReady("service.isUp")
+        setup.latch: $brooklyn:component("planner").attributeWhenReady("service.isUp")
       - type: seaclouds-planner
         name: seaclouds-planner
-        install.latch: $brooklyn:component("deployer").attributeWhenReady("service.isUp")
+        brooklyn.config:
+          planner.config.discovererURL:  $brooklyn:formatString("http://%s:%s", $brooklyn:component("discoverer").attributeWhenReady("host.address"), $brooklyn:component("discoverer").config("discoverer.config.port"))
+          planner.config.monitorGeneratorURL:  $brooklyn:component("monitor-manager").attributeWhenReady("host.address")
+          planner.config.monitorGeneratorPort:  $brooklyn:component("monitor-manager").config("monitor.manager.port")
+          planner.config.slaGeneratorURL: $brooklyn:formatString("http://%s:%s", $brooklyn:component("sla-core").attributeWhenReady("host.address"), $brooklyn:component("sla-core").attributeWhenReady("http.port"))
+        setup.latch: $brooklyn:component("discoverer").attributeWhenReady("service.isUp")
+      - type: seaclouds-discoverer
+        id: seaclouds-discoverer
+        name: seaclouds-discoverer
+        setup.latch: $brooklyn:component("deployer").attributeWhenReady("service.isUp")
       - type: seaclouds-deployer
         name: seaclouds-deployer
         brooklyn.config:
@@ -327,12 +378,12 @@ brooklyn.catalog:
         id: sla-db
         brooklyn.config:
           creationScriptUrl: https://raw.githubusercontent.com/SeaCloudsEU/sla-core/e1d3bd4dec27236cfdefa1eae81d38db3dcd11da/sla-repository/src/main/resources/sql/01database.sql
-        install.latch: $brooklyn:component("monitor-manager").attributeWhenReady("service.isUp")
+        setup.latch: $brooklyn:component("monitor-manager").attributeWhenReady("service.isUp")
       - type: seaclouds-monitor-manager
         name: seaclouds-monitor-manager
         brooklyn.config:
           monitor.dda.host: $brooklyn:component("monitor-dda").attributeWhenReady("host.address")
           monitor.dda.port: $brooklyn:component("monitor-dda").config("monitor.dda.port")
-        install.latch: $brooklyn:component("monitor-dda").attributeWhenReady("service.isUp")
+        setup.latch: $brooklyn:component("monitor-dda").attributeWhenReady("service.isUp")
       - type: seaclouds-monitor-dda
         name: seaclouds-monitor-dda
