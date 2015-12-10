@@ -113,6 +113,7 @@ public class AgreementHelperE{
         try{
             IAgreement agreementStored = null;
     
+            String serializedAgreement = Utils.removeXmlHeader(originalSerializedAgreement);
             if (agreementXML != null) {
     
                 boolean setId = agreementId != null && !"".equals(agreementId);
@@ -122,12 +123,12 @@ public class AgreementHelperE{
                         agreementId = UUID.randomUUID().toString();
                     }
                     logger.debug("createAgreement agreement has no uuid, {} will be assigned", agreementId); 
-                    originalSerializedAgreement = setAgreementIdInSerializedAgreement(originalSerializedAgreement, agreementId);
+                    serializedAgreement = setAgreementIdInSerializedAgreement(serializedAgreement, agreementId);
                     agreementXML.setAgreementId(agreementId);
                 }
     
                 if (!doesAgreementIdExistInRepository(agreementXML.getAgreementId())) {
-                    IAgreement agreement = modelConverter.getAgreementFromAgreementXML(agreementXML, originalSerializedAgreement);
+                    IAgreement agreement = modelConverter.getAgreementFromAgreementXML(agreementXML, serializedAgreement);
                     
                     String providerUuid = agreement.getProvider().getUuid();
                     IProvider provider = providerFromRepository(providerUuid);
