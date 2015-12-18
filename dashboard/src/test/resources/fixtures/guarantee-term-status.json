@@ -1,0 +1,6 @@
+{"AgreementId":"agreement02",
+  "guaranteestatus":"FULFILLED",
+  "guaranteeterms":
+  [{"name":"GTResponseTime", "status":"FULFILLED"},
+    {"name":"GTPerformance", "status":"FULFILLED"}]
+}
