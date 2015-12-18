@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<guaranteestatus AgreementId="agreement02" value="FULFILLED">
+    <guaranteetermstatus name="GTResponseTime" value="VIOLATED"/>
+    <guaranteetermstatus name="GTPerformance" value="FULFILLED"/>
+</guaranteestatus>

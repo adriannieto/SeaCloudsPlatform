@@ -1,0 +1,11 @@
+[
+  {
+    "uuid":"67c764e4-1272-4bdc-a2bd-affee26a2694",
+    "datetime":"2014-08-25T14:54:00CEST",
+    "contract_uuid":"agreement02",
+    "service_name":"ServiceName",
+    "service_scope":"ScopeName2",
+    "metric_name":"Performance",
+    "actual_value":"0"
+  }
+]
