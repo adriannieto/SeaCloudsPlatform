@@ -27,7 +27,7 @@ public class AamWriterResourceTest extends AbstractResourceTest<AamWriterResourc
 
     @Test
     public void testTranslateDesignerModel() throws Exception {
-        String response = this.aamWriterResource.translateDesignerModel(getTopology());
+        String response = aamWriterResource.translateDesignerModel(this.getTopology());
 
         // assertEquals(response, getAam()); Not working due distinct Line Endings, OBJECTS ARE A MUST!!!
         assertNotNull(response);

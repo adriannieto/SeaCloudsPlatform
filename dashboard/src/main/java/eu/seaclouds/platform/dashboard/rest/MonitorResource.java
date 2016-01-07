@@ -34,7 +34,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
 import java.util.*;
 
@@ -47,9 +46,9 @@ public class MonitorResource implements Resource{
     private final SeaCloudsApplicationDataStorage dataStore;
 
     public MonitorResource(MonitorProxy monitorProxy, DeployerProxy deployer) {
-        monitor = monitorProxy;
+        this.monitor = monitorProxy;
         this.deployer = deployer;
-        dataStore = SeaCloudsApplicationDataStorage.getInstance();
+        this.dataStore = SeaCloudsApplicationDataStorage.getInstance();
     }
 
     @GET
@@ -59,20 +58,20 @@ public class MonitorResource implements Resource{
     @Deprecated
     public Response getSensors(@PathParam("seacloudsId") String seacloudsId) throws IOException {
         if (seacloudsId == null) {
-            MonitorResource.LOG.error("Missing input parameters");
-            return Response.status(Status.BAD_REQUEST).build();
+            LOG.error("Missing input parameters");
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }else {
-            SeaCloudsApplicationData seaCloudsApplicationData = this.dataStore.getSeaCloudsApplicationDataById(seacloudsId);
+            SeaCloudsApplicationData seaCloudsApplicationData = dataStore.getSeaCloudsApplicationDataById(seacloudsId);
 
             if (seaCloudsApplicationData == null) {
-                return Response.status(Status.BAD_REQUEST).build();
+                return Response.status(Response.Status.BAD_REQUEST).build();
             }
 
             Map<EntitySummary, List<SensorSummary>> entityMap = new HashMap<>();
-            List<EntitySummary> appEntities = this.deployer.getEntitiesFromApplication(seaCloudsApplicationData.getDeployerApplicationId());
+            List<EntitySummary> appEntities = deployer.getEntitiesFromApplication(seaCloudsApplicationData.getDeployerApplicationId());
 
             for (EntitySummary entity : appEntities) {
-                List<SensorSummary> entitySensors = this.deployer.getEntitySensors(seaCloudsApplicationData.getDeployerApplicationId(), entity.getId());
+                List<SensorSummary> entitySensors = deployer.getEntitySensors(seaCloudsApplicationData.getDeployerApplicationId(), entity.getId());
                 entityMap.put(entity, entitySensors);
             }
 
@@ -99,23 +98,23 @@ public class MonitorResource implements Resource{
     @Deprecated
     public Response getMetrics(@PathParam("seacloudsId") String seacloudsId) throws IOException {
         if (seacloudsId == null) {
-            MonitorResource.LOG.error("Missing input parameters");
-            return Response.status(Status.BAD_REQUEST).build();
+            LOG.error("Missing input parameters");
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }else {
-            SeaCloudsApplicationData seaCloudsApplicationData = this.dataStore.getSeaCloudsApplicationDataById(seacloudsId);
+            SeaCloudsApplicationData seaCloudsApplicationData = dataStore.getSeaCloudsApplicationDataById(seacloudsId);
 
             if (seaCloudsApplicationData == null) {
-                return Response.status(Status.BAD_REQUEST).build();
+                return Response.status(Response.Status.BAD_REQUEST).build();
             }
 
             Map<EntitySummary, List<SensorSummary>> entityMap = new HashMap<>();
-            List<EntitySummary> appEntities = this.deployer.getEntitiesFromApplication(seaCloudsApplicationData.getDeployerApplicationId());
+            List<EntitySummary> appEntities = deployer.getEntitiesFromApplication(seaCloudsApplicationData.getDeployerApplicationId());
 
             for (EntitySummary entity : appEntities) {
-                List<SensorSummary> entitySensors = this.deployer.getEntitySensors(seaCloudsApplicationData.getDeployerApplicationId(), entity.getId());
+                List<SensorSummary> entitySensors = deployer.getEntitySensors(seaCloudsApplicationData.getDeployerApplicationId(), entity.getId());
                 List<SensorSummary> numberSensors = new ArrayList<>();
                 for (SensorSummary entitySensor : entitySensors) {
-                    if (this.isNumberType(entitySensor.getType())) {
+                    if (isNumberType(entitySensor.getType())) {
                         numberSensors.add(entitySensor);
                     }
                 }
@@ -137,15 +136,15 @@ public class MonitorResource implements Resource{
                                    @PathParam("brooklynMetricId") String brooklynMetricId) throws IOException {
 
         if (seacloudsId == null || brooklynEntityId == null || brooklynMetricId == null) {
-            MonitorResource.LOG.error("Missing input parameters");
-            return Response.status(Status.BAD_REQUEST).build();
+            LOG.error("Missing input parameters");
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }else {
-            SeaCloudsApplicationData seaCloudsApplicationData = this.dataStore.getSeaCloudsApplicationDataById(seacloudsId);
+            SeaCloudsApplicationData seaCloudsApplicationData = dataStore.getSeaCloudsApplicationDataById(seacloudsId);
 
             if (seaCloudsApplicationData == null) {
-                return Response.status(Status.BAD_REQUEST).build();
+                return Response.status(Response.Status.BAD_REQUEST).build();
             }
-            String monitorResponse = this.deployer.getEntitySensorsValue(seaCloudsApplicationData.getDeployerApplicationId(),
+            String monitorResponse = deployer.getEntitySensorsValue(seaCloudsApplicationData.getDeployerApplicationId(),
                     brooklynEntityId, brooklynMetricId);
 
             if (monitorResponse == null) {

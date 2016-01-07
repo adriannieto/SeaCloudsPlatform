@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
 
 @Path("/deployer")
@@ -48,11 +47,11 @@ public class DeployerResource implements Resource{
     private final SeaCloudsApplicationDataStorage dataStore;
 
     public DeployerResource(DeployerProxy deployerProxy, MonitorProxy monitorProxy, SlaProxy slaProxy, PlannerProxy planner) {
-        deployer = deployerProxy;
-        monitor = monitorProxy;
-        sla = slaProxy;
+        this.deployer = deployerProxy;
+        this.monitor = monitorProxy;
+        this.sla = slaProxy;
         this.planner = planner;
-        dataStore = SeaCloudsApplicationDataStorage.getInstance();
+        this.dataStore = SeaCloudsApplicationDataStorage.getInstance();
     }
 
     private void cleanUpApplicationDependencies(SeaCloudsApplicationData seaCloudsApplicationData) {
@@ -65,24 +64,24 @@ public class DeployerResource implements Resource{
 
         try {
             for (String ruleId : seaCloudsApplicationData.getMonitoringRulesIds()) {
-                this.monitor.removeMonitoringRule(ruleId);
+                monitor.removeMonitoringRule(ruleId);
             }
         } catch (Exception e) {
-            DeployerResource.LOG.debug("Something went wrong during the cleanup of the monitoring rules");
+            LOG.debug("Something went wrong during the cleanup of the monitoring rules");
             // This is perfectly fine, it will happen if this phase was not reached before the error.
         }
 
         try {
-            this.sla.removeAgreement(seaCloudsApplicationData.getAgreementId());
+            sla.removeAgreement(seaCloudsApplicationData.getAgreementId());
         } catch (Exception e) {
-            DeployerResource.LOG.debug("Something went wrong during the cleanup of the agreement");
+            LOG.debug("Something went wrong during the cleanup of the agreement");
             // This is perfectly fine, it will happen if this phase was not reached before the error.
         }
 
         try {
-            this.deployer.removeApplication(seaCloudsApplicationData.getDeployerApplicationId());
+            deployer.removeApplication(seaCloudsApplicationData.getDeployerApplicationId());
         } catch (Exception e) {
-            DeployerResource.LOG.debug("Something went wrong during the cleanup of the application");
+            LOG.debug("Something went wrong during the cleanup of the application");
             // This is perfectly fine, it will happen if this phase was not reached before the error.
         }
 
@@ -96,42 +95,42 @@ public class DeployerResource implements Resource{
         SeaCloudsApplicationData seaCloudsApplication = null;
 
         if (dam == null) {
-            DeployerResource.LOG.error("Missing input parameters");
-            return Response.status(Status.NOT_ACCEPTABLE).build();
+            LOG.error("Missing input parameters");
+            return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         } else {
             try {
-                DeployerResource.LOG.debug("Deploy new application process started");
+                LOG.debug("Deploy new application process started");
 
                 seaCloudsApplication = new SeaCloudsApplicationData(dam);
 
-                DeployerResource.LOG.debug("STEP 1: Start deployment of the application");
-                TaskSummary taskSummary = this.deployer.deployApplication(dam);
+                LOG.debug("STEP 1: Start deployment of the application");
+                TaskSummary taskSummary = deployer.deployApplication(dam);
                 seaCloudsApplication.setDeployerApplicationId(taskSummary);
 
-                DeployerResource.LOG.debug("STEP 2: Retrieve Monitoring Rules from TOSCA");
-                MonitoringRules monitoringRules = this.planner.getMonitoringRulesByTemplateId(seaCloudsApplication.getMonitoringRulesTemplateId());
+                LOG.debug("STEP 2: Retrieve Monitoring Rules from TOSCA");
+                MonitoringRules monitoringRules = planner.getMonitoringRulesByTemplateId(seaCloudsApplication.getMonitoringRulesTemplateId());
 
-                DeployerResource.LOG.debug("STEP 3: Install Monitoring Rules");
-                this.monitor.addMonitoringRules(monitoringRules);
+                LOG.debug("STEP 3: Install Monitoring Rules");
+                monitor.addMonitoringRules(monitoringRules);
                 seaCloudsApplication.setMonitoringRulesIds(monitoringRules);
 
-                DeployerResource.LOG.debug("STEP 4: Retrieve SLA Agreements from TOSCA");
-                Agreement agreement = this.sla.getAgreementByTemplateId(seaCloudsApplication.getAgreementTemplateId());
+                LOG.debug("STEP 4: Retrieve SLA Agreements from TOSCA");
+                Agreement agreement = sla.getAgreementByTemplateId(seaCloudsApplication.getAgreementTemplateId());
 
-                DeployerResource.LOG.debug("STEP 5: Install SLA Agreements");
-                this.sla.addAgreement(agreement);
+                LOG.debug("STEP 5: Install SLA Agreements");
+                sla.addAgreement(agreement);
                 seaCloudsApplication.setAgreementId(agreement);
 
-                DeployerResource.LOG.debug("STEP 6: Notify Rules Ready (Issue #56)");
-                this.sla.notifyRulesReady(agreement);
+                LOG.debug("STEP 6: Notify Rules Ready (Issue #56)");
+                sla.notifyRulesReady(agreement);
 
-                DeployerResource.LOG.debug("Application deployment process finished");
-                this.dataStore.addSeaCloudsApplicationData(seaCloudsApplication);
+                LOG.debug("Application deployment process finished");
+                dataStore.addSeaCloudsApplicationData(seaCloudsApplication);
                 return Response.ok(seaCloudsApplication).build();
             } catch (Exception e) {
-                this.cleanUpApplicationDependencies(seaCloudsApplication);
-                DeployerResource.LOG.error(e.getMessage());
-                return Response.status(Status.BAD_REQUEST).build();
+                cleanUpApplicationDependencies(seaCloudsApplication);
+                LOG.error(e.getMessage());
+                return Response.status(Response.Status.BAD_REQUEST).build();
             }
         }
     }
@@ -142,7 +141,7 @@ public class DeployerResource implements Resource{
     @Produces(MediaType.APPLICATION_JSON)
     @Path("applications")
     public Response listApplications() {
-        return Response.ok(this.dataStore.listSeaCloudsApplicationData()).build();
+        return Response.ok(dataStore.listSeaCloudsApplicationData()).build();
     }
 
     @GET
@@ -151,16 +150,16 @@ public class DeployerResource implements Resource{
     @Path("applications/{seaCloudsId}")
     public Response getApplication(@PathParam("seaCloudsId") String seaCloudsId) throws IOException {
         if (seaCloudsId == null) {
-            DeployerResource.LOG.error("Missing input parameters");
-            return Response.status(Status.NOT_ACCEPTABLE).build();
+            LOG.error("Missing input parameters");
+            return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         } else {
-            SeaCloudsApplicationData seaCloudsApplicationData = this.dataStore.getSeaCloudsApplicationDataById(seaCloudsId);
+            SeaCloudsApplicationData seaCloudsApplicationData = dataStore.getSeaCloudsApplicationDataById(seaCloudsId);
 
             if (seaCloudsApplicationData == null) {
-                return Response.status(Status.BAD_REQUEST).build();
+                return Response.status(Response.Status.BAD_REQUEST).build();
             }
 
-            return Response.ok(this.deployer.getApplication(seaCloudsApplicationData.getDeployerApplicationId())).build();
+            return Response.ok(deployer.getApplication(seaCloudsApplicationData.getDeployerApplicationId())).build();
         }
     }
 
@@ -170,17 +169,17 @@ public class DeployerResource implements Resource{
     @Path("applications/{seaCloudsId}")
     public Response removeApplication(@PathParam("seaCloudsId") String seaCloudsId) {
         if (seaCloudsId == null) {
-            DeployerResource.LOG.error("Missing input parameters");
-            return Response.status(Status.NOT_ACCEPTABLE).build();
+            LOG.error("Missing input parameters");
+            return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         }
 
-        SeaCloudsApplicationData seaCloudsApplicationData = this.dataStore.getSeaCloudsApplicationDataById(seaCloudsId);
+        SeaCloudsApplicationData seaCloudsApplicationData = dataStore.getSeaCloudsApplicationDataById(seaCloudsId);
 
         if (seaCloudsApplicationData == null) {
-            return Response.status(Status.BAD_REQUEST).build();
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }
-        this.cleanUpApplicationDependencies(seaCloudsApplicationData);
-        this.dataStore.removeSeaCloudsApplicationDataById(seaCloudsApplicationData.getSeaCloudsApplicationId());
+        cleanUpApplicationDependencies(seaCloudsApplicationData);
+        dataStore.removeSeaCloudsApplicationDataById(seaCloudsApplicationData.getSeaCloudsApplicationId());
 
         return Response.ok().build();
     }

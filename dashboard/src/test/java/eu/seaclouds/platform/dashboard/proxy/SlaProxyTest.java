@@ -39,54 +39,54 @@ public class SlaProxyTest extends AbstractProxyTest<SlaProxy> {
 
     @Override
     public SlaProxy getProxy() {
-        return this.getSupport().getConfiguration().getSlaProxy();
+        return getSupport().getConfiguration().getSlaProxy();
     }
 
     @Test
     public void testAddAgreement() throws Exception {
         String xml = TestUtils.getStringFromPath(TestFixtures.AGREEMENT_PATH_XML);
 
-        this.getMockWebServer().enqueue(new MockResponse()
+        getMockWebServer().enqueue(new MockResponse()
                         .setHeader("Accept", MediaType.APPLICATION_XML)
                         .setHeader("Content-Type", MediaType.APPLICATION_XML)
         );
 
-        assertNotNull(this.getProxy().addAgreement(ObjectMapperHelpers.XmlToObject(xml, Agreement.class)));
+        assertNotNull(getProxy().addAgreement(ObjectMapperHelpers.XmlToObject(xml, Agreement.class)));
     }
 
     @Test
     public void testRemoveAgreement() throws Exception {
-        this.getMockWebServer().enqueue(new MockResponse()
+        getMockWebServer().enqueue(new MockResponse()
                         .setHeader("Accept", MediaType.APPLICATION_XML)
                         .setHeader("Content-Type", MediaType.APPLICATION_XML)
         );
 
-        assertNotNull(this.getProxy().removeAgreement(this.RANDOM_STRING));
+        assertNotNull(getProxy().removeAgreement(RANDOM_STRING));
     }
 
     @Test
     public void testNotifyRulesReady() throws Exception {
         String xml = TestUtils.getStringFromPath(TestFixtures.AGREEMENT_PATH_XML);
 
-        this.getMockWebServer().enqueue(new MockResponse()
+        getMockWebServer().enqueue(new MockResponse()
                         .setHeader("Accept", MediaType.APPLICATION_XML)
                         .setHeader("Content-Type", MediaType.APPLICATION_XML)
         );
 
-        assertNotNull(this.getProxy().notifyRulesReady(ObjectMapperHelpers.XmlToObject(xml, Agreement.class)));
+        assertNotNull(getProxy().notifyRulesReady(ObjectMapperHelpers.XmlToObject(xml, Agreement.class)));
     }
 
     @Test
     public void testGetAgreement() throws Exception {
         String xml = TestUtils.getStringFromPath(TestFixtures.AGREEMENT_PATH_XML);
 
-        this.getMockWebServer().enqueue(new MockResponse()
+        getMockWebServer().enqueue(new MockResponse()
                         .setBody(xml)
                         .setHeader("Accept", MediaType.APPLICATION_XML)
                         .setHeader("Content-Type", MediaType.APPLICATION_XML)
         );
 
-        Agreement response = this.getProxy().getAgreement(this.RANDOM_STRING);
+        Agreement response = getProxy().getAgreement(RANDOM_STRING);
 
         // Agreement doesn't implement equals(), so we are going to check the IDs
         Agreement fixture = ObjectMapperHelpers.XmlToObject(xml, Agreement.class);
@@ -97,13 +97,13 @@ public class SlaProxyTest extends AbstractProxyTest<SlaProxy> {
     public void testGetAgreementByTemplateId() throws Exception {
         String xml = TestUtils.getStringFromPath(TestFixtures.AGREEMENT_PATH_XML);
 
-        this.getMockWebServer().enqueue(new MockResponse()
+        getMockWebServer().enqueue(new MockResponse()
                         .setBody(xml)
                         .setHeader("Accept", MediaType.APPLICATION_XML)
                         .setHeader("Content-Type", MediaType.APPLICATION_XML)
         );
 
-        Agreement response = this.getProxy().getAgreementByTemplateId(this.RANDOM_STRING);
+        Agreement response = getProxy().getAgreementByTemplateId(RANDOM_STRING);
 
         // Agreement doesn't implement equals(), so we are going to check the IDs
         Agreement fixture = ObjectMapperHelpers.XmlToObject(xml, Agreement.class);
@@ -117,14 +117,14 @@ public class SlaProxyTest extends AbstractProxyTest<SlaProxy> {
 
         Agreement agreement = ObjectMapperHelpers.XmlToObject(agreementXml, Agreement.class);
 
-        this.getMockWebServer().enqueue(new MockResponse()
+        getMockWebServer().enqueue(new MockResponse()
                         .setBody(termStatusXml)
                         .setHeader("Accept", MediaType.APPLICATION_XML)
                         .setHeader("Content-Type", MediaType.APPLICATION_XML)
         );
 
         // GuaranteeTermsStatus doesn't implement equals(), so we are going to check the IDs
-        GuaranteeTermsStatus response = this.getProxy().getAgreementStatus(agreement);
+        GuaranteeTermsStatus response = getProxy().getAgreementStatus(agreement);
         GuaranteeTermsStatus fixture = ObjectMapperHelpers.XmlToObject(termStatusXml, GuaranteeTermsStatus.class);
         assertEquals(response.getAgreementId(), fixture.getAgreementId());
     }
@@ -137,7 +137,7 @@ public class SlaProxyTest extends AbstractProxyTest<SlaProxy> {
         Agreement agreement = ObjectMapperHelpers.XmlToObject(agreementXml, Agreement.class);
 
         for(int i = 0; i < agreement.getTerms().getAllTerms().getGuaranteeTerms().size(); i++){
-            this.getMockWebServer().enqueue(new MockResponse()
+            getMockWebServer().enqueue(new MockResponse()
                             .setBody(termStatusXml)
                             .setHeader("Accept", MediaType.APPLICATION_XML)
                             .setHeader("Content-Type", MediaType.APPLICATION_XML)
@@ -147,7 +147,7 @@ public class SlaProxyTest extends AbstractProxyTest<SlaProxy> {
 
         // GuaranteeTerm doesn't implement equals(), so we are going to check not null
         for(GuaranteeTerm term : agreement.getTerms().getAllTerms().getGuaranteeTerms()){
-            assertNotNull(this.getProxy().getGuaranteeTermViolations(agreement, term));
+            assertNotNull(getProxy().getGuaranteeTermViolations(agreement, term));
         }
 
     }

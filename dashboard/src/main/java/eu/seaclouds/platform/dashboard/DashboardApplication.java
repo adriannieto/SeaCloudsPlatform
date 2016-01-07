@@ -53,7 +53,7 @@ public class DashboardApplication extends Application<DashboardConfiguration> {
     public void run(DashboardConfiguration configuration, Environment environment) throws Exception {
         // Generating  HTTP Clients
         Client jerseyClient = new JerseyClientBuilder(environment).using(configuration.getJerseyClientConfiguration())
-                .build(this.getName());
+                .build(getName());
 
         // Link HTTP Clients with the Factories
         configuration.getDeployerProxy().setJerseyClient(jerseyClient);

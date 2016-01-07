@@ -41,69 +41,69 @@ public class SeaCloudsApplicationDataStorageTest {
     @BeforeMethod
     public void setUp() throws IOException {
         Yaml yamlParser = new Yaml();
-        URL resource = Resources.getResource(SeaCloudsApplicationDataStorageTest.TOSCA_DAM_FILE_PATH);
+        URL resource = Resources.getResource(TOSCA_DAM_FILE_PATH);
         Map toscaDamMap = (Map) yamlParser.load(FileUtils.openInputStream(new File(resource.getFile())));
         // Fill SeaCloudsApplicationDataStorage with empty applications with distinct SeaCloudsID
-        for(int i = 0; i < SeaCloudsApplicationDataStorageTest.INITIAL_DATASTORE_SIZE; i++){
-            SeaCloudsApplicationDataStorageTest.dataStore.addSeaCloudsApplicationData(new SeaCloudsApplicationData(toscaDamMap));
+        for(int i = 0; i < INITIAL_DATASTORE_SIZE; i++){
+            dataStore.addSeaCloudsApplicationData(new SeaCloudsApplicationData(toscaDamMap));
         }
     }
 
     @AfterMethod
     public void tearDown() throws Exception {
         // Clear SeaCloudsApplicationDataStorage
-        SeaCloudsApplicationDataStorageTest.dataStore.clearDataStore();
+        dataStore.clearDataStore();
     }
 
     @Test
     public void testAddSeaCloudsApplicationData() throws IOException {
         Yaml yamlParser = new Yaml();
-        URL resource = Resources.getResource(SeaCloudsApplicationDataStorageTest.TOSCA_DAM_FILE_PATH);
+        URL resource = Resources.getResource(TOSCA_DAM_FILE_PATH);
         Map toscaDamMap = (Map) yamlParser.load(FileUtils.openInputStream(new File(resource.getFile())));
 
-        int oldSize = SeaCloudsApplicationDataStorageTest.dataStore.listSeaCloudsApplicationData().size();
+        int oldSize = dataStore.listSeaCloudsApplicationData().size();
         SeaCloudsApplicationData seaCloudsApplicationData = new SeaCloudsApplicationData(toscaDamMap);
-        SeaCloudsApplicationDataStorageTest.dataStore.addSeaCloudsApplicationData(seaCloudsApplicationData);
-        int newSize = SeaCloudsApplicationDataStorageTest.dataStore.listSeaCloudsApplicationData().size();
+        dataStore.addSeaCloudsApplicationData(seaCloudsApplicationData);
+        int newSize = dataStore.listSeaCloudsApplicationData().size();
         assertEquals(oldSize, newSize-1);
 
-        SeaCloudsApplicationData seaCloudsApplicationDataById = SeaCloudsApplicationDataStorageTest.dataStore.getSeaCloudsApplicationDataById(seaCloudsApplicationData.getSeaCloudsApplicationId());
+        SeaCloudsApplicationData seaCloudsApplicationDataById = dataStore.getSeaCloudsApplicationDataById(seaCloudsApplicationData.getSeaCloudsApplicationId());
         assertEquals(seaCloudsApplicationData, seaCloudsApplicationDataById);
     }
 
     @Test
     public void testRemoveSeaCloudsApplicationData() throws IOException {
         Yaml yamlParser = new Yaml();
-        URL resource = Resources.getResource(SeaCloudsApplicationDataStorageTest.TOSCA_DAM_FILE_PATH);
+        URL resource = Resources.getResource(TOSCA_DAM_FILE_PATH);
         Map toscaDamMap = (Map) yamlParser.load(FileUtils.openInputStream(new File(resource.getFile())));
 
-        int oldSize = SeaCloudsApplicationDataStorageTest.dataStore.listSeaCloudsApplicationData().size();
+        int oldSize = dataStore.listSeaCloudsApplicationData().size();
         SeaCloudsApplicationData seaCloudsApplicationData = new SeaCloudsApplicationData(toscaDamMap);
-        SeaCloudsApplicationDataStorageTest.dataStore.addSeaCloudsApplicationData(seaCloudsApplicationData);
+        dataStore.addSeaCloudsApplicationData(seaCloudsApplicationData);
 
-        SeaCloudsApplicationData seaCloudsApplicationDataById = SeaCloudsApplicationDataStorageTest.dataStore.removeSeaCloudsApplicationDataById(seaCloudsApplicationData.getSeaCloudsApplicationId());
+        SeaCloudsApplicationData seaCloudsApplicationDataById = dataStore.removeSeaCloudsApplicationDataById(seaCloudsApplicationData.getSeaCloudsApplicationId());
         assertEquals(seaCloudsApplicationData, seaCloudsApplicationDataById);
 
-        int newSize = SeaCloudsApplicationDataStorageTest.dataStore.listSeaCloudsApplicationData().size();
+        int newSize = dataStore.listSeaCloudsApplicationData().size();
         assertEquals(oldSize, newSize);
     }
 
     @Test
     public void testGetSeaCloudsApplicationData() throws IOException {
         Yaml yamlParser = new Yaml();
-        URL resource = Resources.getResource(SeaCloudsApplicationDataStorageTest.TOSCA_DAM_FILE_PATH);
+        URL resource = Resources.getResource(TOSCA_DAM_FILE_PATH);
         Map toscaDamMap = (Map) yamlParser.load(FileUtils.openInputStream(new File(resource.getFile())));
 
         SeaCloudsApplicationData seaCloudsApplicationData = new SeaCloudsApplicationData(toscaDamMap);
-        SeaCloudsApplicationDataStorageTest.dataStore.addSeaCloudsApplicationData(seaCloudsApplicationData);
+        dataStore.addSeaCloudsApplicationData(seaCloudsApplicationData);
 
-        SeaCloudsApplicationData seaCloudsApplicationDataById = SeaCloudsApplicationDataStorageTest.dataStore.getSeaCloudsApplicationDataById(seaCloudsApplicationData.getSeaCloudsApplicationId());
+        SeaCloudsApplicationData seaCloudsApplicationDataById = dataStore.getSeaCloudsApplicationDataById(seaCloudsApplicationData.getSeaCloudsApplicationId());
         assertEquals(seaCloudsApplicationData, seaCloudsApplicationDataById);
     }
 
     @Test
     public void testListSeaCloudsApplicationData() {
-        assertEquals(SeaCloudsApplicationDataStorageTest.dataStore.listSeaCloudsApplicationData().size(), SeaCloudsApplicationDataStorageTest.INITIAL_DATASTORE_SIZE);
+        assertEquals(dataStore.listSeaCloudsApplicationData().size(), INITIAL_DATASTORE_SIZE);
     }
 
 }

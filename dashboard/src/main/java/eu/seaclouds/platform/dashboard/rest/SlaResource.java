@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
 @Path("/sla")
 public class SlaResource implements Resource{
@@ -40,8 +39,8 @@ public class SlaResource implements Resource{
     private final SeaCloudsApplicationDataStorage dataStore;
 
     public SlaResource(SlaProxy slaProxy) {
-        sla = slaProxy;
-        dataStore = SeaCloudsApplicationDataStorage.getInstance();
+        this.sla = slaProxy;
+        this.dataStore = SeaCloudsApplicationDataStorage.getInstance();
     }
 
 
@@ -51,15 +50,15 @@ public class SlaResource implements Resource{
     @Path("agreements/{seaCloudsId}")
     public Response getAgreement(@PathParam("seaCloudsId") String seaCloudsId) {
         if (seaCloudsId == null) {
-            SlaResource.LOG.error("Missing input parameters");
-            return Response.status(Status.NOT_ACCEPTABLE).build();
+            LOG.error("Missing input parameters");
+            return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         } else {
-            SeaCloudsApplicationData seaCloudsApplicationData = this.dataStore.getSeaCloudsApplicationDataById(seaCloudsId);
+            SeaCloudsApplicationData seaCloudsApplicationData = dataStore.getSeaCloudsApplicationDataById(seaCloudsId);
             if (seaCloudsApplicationData == null) {
-                return Response.status(Status.BAD_REQUEST).build();
+                return Response.status(Response.Status.BAD_REQUEST).build();
             }
 
-            return Response.ok(this.sla.getAgreement(seaCloudsApplicationData.getAgreementId())).build();
+            return Response.ok(sla.getAgreement(seaCloudsApplicationData.getAgreementId())).build();
         }
     }
 
@@ -70,17 +69,17 @@ public class SlaResource implements Resource{
     @Path("agreements/{seaCloudsId}/terms/{termName}/violations")
     public Response getViolations(@PathParam("seaCloudsId") String seaCloudsId, @PathParam("termName") String termName) {
         if (seaCloudsId == null || termName == null) {
-            SlaResource.LOG.error("Missing input parameters");
-            return Response.status(Status.NOT_ACCEPTABLE).build();
+            LOG.error("Missing input parameters");
+            return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         } else {
-            SeaCloudsApplicationData seaCloudsApplicationData = this.dataStore.getSeaCloudsApplicationDataById(seaCloudsId);
+            SeaCloudsApplicationData seaCloudsApplicationData = dataStore.getSeaCloudsApplicationDataById(seaCloudsId);
 
             if (seaCloudsApplicationData == null) {
-                SlaResource.LOG.error("Application " + seaCloudsId + " not found");
-                return Response.status(Status.BAD_REQUEST).build();
+                LOG.error("Application " + seaCloudsId + " not found");
+                return Response.status(Response.Status.BAD_REQUEST).build();
             }
 
-            Agreement agreement = this.sla.getAgreement(seaCloudsApplicationData.getAgreementId());
+            Agreement agreement = sla.getAgreement(seaCloudsApplicationData.getAgreementId());
             GuaranteeTerm term = null;
             for (GuaranteeTerm termItem : agreement.getTerms().getAllTerms().getGuaranteeTerms()) {
                 if(termItem.getName().equalsIgnoreCase(termName)){
@@ -89,7 +88,7 @@ public class SlaResource implements Resource{
                 }
             }
 
-            return Response.ok(this.sla.getGuaranteeTermViolations(agreement, term)).build();
+            return Response.ok(sla.getGuaranteeTermViolations(agreement, term)).build();
         }
     }
 
@@ -100,17 +99,17 @@ public class SlaResource implements Resource{
     @Path("agreements/{seaCloudsId}/status")
     public Response getAgreementStatus(@PathParam("seaCloudsId") String seaCloudsId) {
         if (seaCloudsId == null) {
-            SlaResource.LOG.error("Missing input parameters");
-            return Response.status(Status.NOT_ACCEPTABLE).build();
+            LOG.error("Missing input parameters");
+            return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         } else {
-            SeaCloudsApplicationData seaCloudsApplicationData = this.dataStore.getSeaCloudsApplicationDataById(seaCloudsId);
+            SeaCloudsApplicationData seaCloudsApplicationData = dataStore.getSeaCloudsApplicationDataById(seaCloudsId);
             if (seaCloudsApplicationData == null) {
-                SlaResource.LOG.error("Application " + seaCloudsId + " not found");
-                return Response.status(Status.BAD_REQUEST).build();
+                LOG.error("Application " + seaCloudsId + " not found");
+                return Response.status(Response.Status.BAD_REQUEST).build();
             }
 
-            Agreement agreement = this.sla.getAgreement(seaCloudsApplicationData.getAgreementId());
-            return Response.ok(this.sla.getAgreementStatus(agreement)).build();
+            Agreement agreement = sla.getAgreement(seaCloudsApplicationData.getAgreementId());
+            return Response.ok(sla.getAgreementStatus(agreement)).build();
         }
     }
 }

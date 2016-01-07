@@ -41,39 +41,39 @@ public abstract class AbstractProxyTest<T extends AbstractProxy> {
 
     // Create a new Dropwizard Test Application
     private final DropwizardTestSupport<DashboardTestConfiguration> SUPPORT =
-            new DropwizardTestSupport<>(DashboardTestApplication.class, resourceFilePath(AbstractProxyTest.TEST_CONFIG_YAML_PATH));
+            new DropwizardTestSupport<>(DashboardTestApplication.class, resourceFilePath(TEST_CONFIG_YAML_PATH));
 
     public final DropwizardTestSupport<DashboardTestConfiguration> getSupport() {
-        return this.SUPPORT;
+        return SUPPORT;
     }
 
     public final MockWebServer getMockWebServer() {
-        return this.mockWebServer;
+        return mockWebServer;
     }
 
     @BeforeClass
     public final void loadDropWizard() throws Exception {
-        this.SUPPORT.before();
+        SUPPORT.before();
     }
 
     @AfterClass
     public final void unLoadDropWizard() throws Exception {
-        this.SUPPORT.after();
+        SUPPORT.after();
     }
 
     @BeforeMethod
     public final void setUp() throws Exception {
-        this.mockWebServer = new MockWebServer();
-        HttpUrl serverUrl = this.mockWebServer.url("/");
+        mockWebServer = new MockWebServer();
+        HttpUrl serverUrl = mockWebServer.url("/");
 
         // Override factory endpoint
-        this.getProxy().setHost(serverUrl.host());
-        this.getProxy().setPort(serverUrl.port());
+        getProxy().setHost(serverUrl.host());
+        getProxy().setPort(serverUrl.port());
     }
 
     @AfterMethod
     public void tearDown() throws Exception {
-        this.mockWebServer.shutdown();
+        mockWebServer.shutdown();
     }
 
     public abstract T getProxy();

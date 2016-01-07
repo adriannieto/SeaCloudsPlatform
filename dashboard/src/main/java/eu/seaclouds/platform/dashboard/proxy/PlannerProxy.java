@@ -32,7 +32,7 @@ public class PlannerProxy extends AbstractProxy {
      * @return MonitoringRules ready to be installed in Tower4Clouds
      */
     public MonitoringRules getMonitoringRulesByTemplateId(String monitoringRuleTemplateId) {
-        return this.getJerseyClient().target(this.getEndpoint() + "/planner/monitoringrules/" + monitoringRuleTemplateId).request()
+        return getJerseyClient().target(getEndpoint() + "/planner/monitoringrules/" + monitoringRuleTemplateId).request()
                 .buildGet().invoke().readEntity(MonitoringRules.class);
     }
 
@@ -44,7 +44,7 @@ public class PlannerProxy extends AbstractProxy {
      */
     public String getAdps(String aam) {
         Entity content = Entity.entity(aam, MediaType.TEXT_PLAIN);
-        Invocation invocation = this.getJerseyClient().target(this.getEndpoint() + "/planner/plan").request().buildPost(content);
+        Invocation invocation = getJerseyClient().target(getEndpoint() + "/planner/plan").request().buildPost(content);
         return invocation.invoke().readEntity(String.class);
     }
 
@@ -56,7 +56,7 @@ public class PlannerProxy extends AbstractProxy {
      */
     public String getDam(String adp) {
         Entity content = Entity.entity(adp, MediaType.TEXT_PLAIN);
-        Invocation invocation = this.getJerseyClient().target(this.getEndpoint() + "/planner/damgen").request().buildPost(content);
+        Invocation invocation = getJerseyClient().target(getEndpoint() + "/planner/damgen").request().buildPost(content);
         return invocation.invoke().readEntity(String.class);
     }
 }

@@ -31,36 +31,36 @@ import java.util.List;
 import static org.testng.Assert.*;
 
 public class SlaResourceTest extends AbstractResourceTest<SlaResource>{
-    SlaResource resource = new SlaResource(this.getSlaProxy());
+    SlaResource resource = new SlaResource(getSlaProxy());
     SeaCloudsApplicationData applicationData;
 
     @Override
     @BeforeMethod
     public void setUpMethod() throws Exception {
         super.setUpMethod();
-        this.applicationData = new SeaCloudsApplicationData(this.getDam());
-        SeaCloudsApplicationDataStorage.getInstance().addSeaCloudsApplicationData(this.applicationData);
+        applicationData = new SeaCloudsApplicationData(getDam());
+        SeaCloudsApplicationDataStorage.getInstance().addSeaCloudsApplicationData(applicationData);
     }
 
 
     @Test
     public void testGetAgreement() throws Exception {
-        Agreement agreement = (Agreement) this.resource.getAgreement(this.applicationData.getSeaCloudsApplicationId()).getEntity();
+        Agreement agreement = (Agreement) resource.getAgreement(applicationData.getSeaCloudsApplicationId()).getEntity();
         assertNotNull(agreement);
     }
 
     @Test
     public void testGetAgreementStatus() throws Exception {
-        GuaranteeTermsStatus entity = (GuaranteeTermsStatus) this.resource.getAgreementStatus(this.applicationData.getSeaCloudsApplicationId()).getEntity();
+        GuaranteeTermsStatus entity = (GuaranteeTermsStatus) resource.getAgreementStatus(applicationData.getSeaCloudsApplicationId()).getEntity();
         assertNotNull(entity);
     }
 
     @Test
     public void testGetViolations() throws Exception {
-        Agreement agreement = (Agreement) this.resource.getAgreement(this.applicationData.getSeaCloudsApplicationId()).getEntity();
+        Agreement agreement = (Agreement) resource.getAgreement(applicationData.getSeaCloudsApplicationId()).getEntity();
 
         for(GuaranteeTerm term :  agreement.getTerms().getAllTerms().getGuaranteeTerms()){
-            List<Violation> entity = (List<Violation>) this.resource.getViolations(this.applicationData.getSeaCloudsApplicationId(), term.getName()).getEntity();
+            List<Violation> entity = (List<Violation>) resource.getViolations(applicationData.getSeaCloudsApplicationId(), term.getName()).getEntity();
             assertNotNull(entity);
         }
     }

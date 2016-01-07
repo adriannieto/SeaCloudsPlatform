@@ -107,11 +107,11 @@ public class ObjectMapperHelpers {
      * @throws IOException if is not possible to parse the object
      **/
     public static <T> List<T> XmlToObjectCollection(String xml, Class<T> type) throws JAXBException {
-        JAXBContext ctx = JAXBContext.newInstance(JAXBCollection.class, type);
+        JAXBContext ctx = JAXBContext.newInstance(ObjectMapperHelpers.JAXBCollection.class, type);
         Unmarshaller u = ctx.createUnmarshaller();
 
         Source src = new StreamSource(IOUtils.toInputStream(xml));
-        JAXBCollection<T> collection = u.unmarshal(src, JAXBCollection.class).getValue();
+        ObjectMapperHelpers.JAXBCollection<T> collection = u.unmarshal(src, ObjectMapperHelpers.JAXBCollection.class).getValue();
         return collection.getItems();
     }
 
@@ -142,9 +142,9 @@ public class ObjectMapperHelpers {
 
         public JAXBCollection(Collection<T> contents) {
             if (contents instanceof List) {
-                this.items = (List<T>) contents;
+                items = (List<T>) contents;
             } else {
-                this.items = new ArrayList<T>(contents);
+                items = new ArrayList<T>(contents);
             }
 
         }
@@ -154,7 +154,7 @@ public class ObjectMapperHelpers {
         }
 
         public List<T> getItems() {
-            return this.items;
+            return items;
         }
 
     }

@@ -39,7 +39,7 @@ public class MonitorProxyTest extends AbstractProxyTest<MonitorProxy> {
 
     @Override
     public MonitorProxy getProxy() {
-        return this.getSupport().getConfiguration().getMonitorProxy();
+        return getSupport().getConfiguration().getMonitorProxy();
     }
 
     @Test
@@ -47,37 +47,37 @@ public class MonitorProxyTest extends AbstractProxyTest<MonitorProxy> {
         URL resource = Resources.getResource(TestFixtures.MONITORING_RULES_PATH);
         String xml = FileUtils.readFileToString(new File(resource.getFile()));
 
-        this.getMockWebServer().enqueue(new MockResponse()
+        getMockWebServer().enqueue(new MockResponse()
                         .setBody(xml)
                         .setHeader("Accept", MediaType.APPLICATION_XML)
                         .setHeader("Content-Type", MediaType.APPLICATION_XML)
         );
-        assertEquals(ObjectMapperHelpers.XmlToObject(xml, MonitoringRules.class), this.getProxy().listMonitoringRules());
+        assertEquals(ObjectMapperHelpers.XmlToObject(xml, MonitoringRules.class), getProxy().listMonitoringRules());
     }
 
     @Test
     public void testAddMonitoringRules() throws Exception {
         String xml = TestUtils.getStringFromPath(TestFixtures.MONITORING_RULES_PATH);
 
-        this.getMockWebServer().enqueue(new MockResponse()
+        getMockWebServer().enqueue(new MockResponse()
                         .setHeader("Accept", MediaType.APPLICATION_XML)
                         .setHeader("Content-Type", MediaType.APPLICATION_XML)
         );
 
-        assertNotNull(this.getProxy().addMonitoringRules(ObjectMapperHelpers.XmlToObject(xml, MonitoringRules.class)));
+        assertNotNull(getProxy().addMonitoringRules(ObjectMapperHelpers.XmlToObject(xml, MonitoringRules.class)));
 
     }
 
     @Test
     public void testRemoveMonitoringRule() throws Exception {
         String xml = TestUtils.getStringFromPath(TestFixtures.MONITORING_RULES_PATH);
-        this.getMockWebServer().enqueue(new MockResponse()
+        getMockWebServer().enqueue(new MockResponse()
                         .setHeader("Accept", MediaType.APPLICATION_XML)
                         .setHeader("Content-Type", MediaType.APPLICATION_XML)
         );
 
         ObjectMapperHelpers.XmlToObject(xml, MonitoringRules.class);
-        assertNotNull(this.getProxy().removeMonitoringRule(this.RANDOM_STRING));
+        assertNotNull(getProxy().removeMonitoringRule(RANDOM_STRING));
     }
 
 }

@@ -26,11 +26,11 @@ import static org.testng.Assert.*;
 
 public class DeployerResourceTest extends AbstractResourceTest<DeployerResource> {
 
-    private final DeployerResource deployerResource = new DeployerResource(this.getDeployerProxy(), this.getMonitorProxy(), this.getSlaProxy(), this.getPlannerProxy());
+    private final DeployerResource deployerResource = new DeployerResource(getDeployerProxy(), getMonitorProxy(), getSlaProxy(), getPlannerProxy());
 
     @Test
     public void testAddApplication() throws Exception {
-        SeaCloudsApplicationData application = (SeaCloudsApplicationData) this.deployerResource.addApplication(this.getDam()).getEntity();
+        SeaCloudsApplicationData application = (SeaCloudsApplicationData) deployerResource.addApplication(getDam()).getEntity();
         assertNotNull(application.getName());
         assertNotNull(application.getToscaDam());
         assertNotNull(application.getAgreementId());
@@ -42,37 +42,37 @@ public class DeployerResourceTest extends AbstractResourceTest<DeployerResource>
 
     @Test
     public void testListApplications() throws Exception {
-        List<SeaCloudsApplicationData> list = (List<SeaCloudsApplicationData>) this.deployerResource.listApplications().getEntity();
+        List<SeaCloudsApplicationData> list = (List<SeaCloudsApplicationData>) deployerResource.listApplications().getEntity();
         assertTrue(list.isEmpty());
-        this.deployerResource.addApplication(this.getDam());
-        this.deployerResource.addApplication(this.getDam());
-        this.deployerResource.addApplication(this.getDam());
-        list = (List<SeaCloudsApplicationData>) this.deployerResource.listApplications().getEntity();
+        deployerResource.addApplication(getDam());
+        deployerResource.addApplication(getDam());
+        deployerResource.addApplication(getDam());
+        list = (List<SeaCloudsApplicationData>) deployerResource.listApplications().getEntity();
         assertEquals(list.size(), 3);
     }
 
     @Test
     public void testGetApplication() throws Exception {
-        assertNull(this.deployerResource.getApplication("this-app-doesn't-exist").getEntity());
-        SeaCloudsApplicationData application = (SeaCloudsApplicationData) this.deployerResource.addApplication(this.getDam()).getEntity();
-        assertNotNull(this.deployerResource.getApplication(application.getSeaCloudsApplicationId()));
+        assertNull(deployerResource.getApplication("this-app-doesn't-exist").getEntity());
+        SeaCloudsApplicationData application = (SeaCloudsApplicationData) deployerResource.addApplication(getDam()).getEntity();
+        assertNotNull(deployerResource.getApplication(application.getSeaCloudsApplicationId()));
     }
 
     @Test
     public void testRemoveApplication() throws Exception {
-        SeaCloudsApplicationData application = (SeaCloudsApplicationData) this.deployerResource.addApplication(this.getDam()).getEntity();
-        this.deployerResource.addApplication(this.getDam());
-        this.deployerResource.addApplication(this.getDam());
+        SeaCloudsApplicationData application = (SeaCloudsApplicationData) deployerResource.addApplication(getDam()).getEntity();
+        deployerResource.addApplication(getDam());
+        deployerResource.addApplication(getDam());
 
-        assertNotNull(this.deployerResource.getApplication(application.getSeaCloudsApplicationId()).getEntity());
+        assertNotNull(deployerResource.getApplication(application.getSeaCloudsApplicationId()).getEntity());
 
-        List<SeaCloudsApplicationData> list = (List<SeaCloudsApplicationData>) this.deployerResource.listApplications().getEntity();
+        List<SeaCloudsApplicationData> list = (List<SeaCloudsApplicationData>) deployerResource.listApplications().getEntity();
         assertEquals(list.size(), 3);
 
-        this.deployerResource.removeApplication(application.getSeaCloudsApplicationId());
-        list = (List<SeaCloudsApplicationData>) this.deployerResource.listApplications().getEntity();
+        deployerResource.removeApplication(application.getSeaCloudsApplicationId());
+        list = (List<SeaCloudsApplicationData>) deployerResource.listApplications().getEntity();
         assertEquals(list.size(), 2);
 
-        assertNull(this.deployerResource.getApplication(application.getSeaCloudsApplicationId()).getEntity());
+        assertNull(deployerResource.getApplication(application.getSeaCloudsApplicationId()).getEntity());
     }
 }
