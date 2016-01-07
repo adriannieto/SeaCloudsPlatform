@@ -38,7 +38,7 @@ public class DeployerProxy extends AbstractProxy {
      * Creates proxied HTTP GET request to Apache Brooklyn which returns the details about a particular hosted application
      *
      * @param brooklynId of the desired application to fetch. This ID may differ from SeaClouds Application ID
-     * @return the request
+     * @return ApplicationSummary
      */
     public ApplicationSummary getApplication(String brooklynId) throws IOException {
         Invocation invocation = this.getJerseyClient().target(this.getEndpoint() + "/v1/applications/" + brooklynId).request().buildGet();
@@ -56,7 +56,7 @@ public class DeployerProxy extends AbstractProxy {
      * Creates a proxied HTTP DELETE request to Apache Brooklyn to remove an application
      *
      * @param brooklynId of the desired application to remove. This ID may differ from SeaClouds Application ID
-     * @return the request
+     * @return TaskSummary representing the running process
      */
     public TaskSummary removeApplication(String brooklynId) throws IOException {
         Invocation invocation = this.getJerseyClient().target(this.getEndpoint() + "/v1/applications/" + brooklynId).request().buildDelete();
@@ -75,7 +75,7 @@ public class DeployerProxy extends AbstractProxy {
      * Creates a proxied HTTP POST request to Apache Brooklyn to deploy a new application
      *
      * @param tosca file compliant with the Apache Brooklyn TOSCA specification
-     * @return a task
+     * @return TaskSummary representing the running process
      */
     public TaskSummary deployApplication(String tosca) throws IOException {
 
@@ -91,6 +91,12 @@ public class DeployerProxy extends AbstractProxy {
         return ObjectMapperHelpers.JsonToObject(invocation.invoke().readEntity(String.class), TaskSummary.class);
     }
 
+    /**
+     * Creates a proxied HTTP GET request to Apache Brooklyn to retrieve the Application's Entities
+     *
+     * @param brooklynId of the desired application to fetch. This ID may differ from SeaClouds Application ID
+     * @return List<EntitySummary> with all the children entities of the application
+     */
     public List<EntitySummary> getEntitiesFromApplication(String brooklynId) throws IOException {
         Invocation invocation = this.getJerseyClient()
                 .target(this.getEndpoint() + "/v1/applications/" + brooklynId + "/entities")
@@ -105,6 +111,13 @@ public class DeployerProxy extends AbstractProxy {
         return ObjectMapperHelpers.JsonToObjectCollection(invocation.invoke().readEntity(String.class), EntitySummary.class);
     }
 
+    /**
+     * Creates a proxied HTTP GET request to Apache Brooklyn to retrieve Sensors from a particular Entity
+     *
+     * @param brooklynId of the desired application to fetch. This ID may differ from SeaClouds Application ID
+     * @param brooklynEntityId of the desired entity. This Entity ID should be children of brooklynId
+     * @return List<SensorSummary> with the entity sensors
+     */
     public List<SensorSummary> getEntitySensors(String brooklynId, String brooklynEntityId) throws IOException {
         Invocation invocation = this.getJerseyClient()
                 .target(this.getEndpoint() + "/v1/applications/" + brooklynId + "/entities/" + brooklynEntityId + "/sensors")
@@ -119,6 +132,14 @@ public class DeployerProxy extends AbstractProxy {
         return ObjectMapperHelpers.JsonToObjectCollection(invocation.invoke().readEntity(String.class), SensorSummary.class);
     }
 
+    /**
+     * Creates a proxied HTTP GET request to Apache Brooklyn to retrieve Sensors from a particular Entity
+     *
+     * @param brooklynId of the desired application to fetch. This ID may differ from SeaClouds Application ID
+     * @param brooklynEntityId of the desired entity. This Entity ID should be children of brooklynId
+     * @param sensorId of the desired sensor. This Sensor ID should be children of brooklynEntityid
+     * @return String representing the sensor value
+     */
     public String getEntitySensorsValue(String brooklynId, String brooklynEntityId, String sensorId) throws IOException {
         Invocation invocation = this.getJerseyClient().target(
                 this.getEndpoint() + "/v1/applications/" + brooklynId + "/entities/" + brooklynEntityId + "/sensors/" + sensorId + "?raw=true")

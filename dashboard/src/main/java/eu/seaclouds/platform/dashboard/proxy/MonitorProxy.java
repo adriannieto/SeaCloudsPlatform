@@ -29,7 +29,7 @@ public class MonitorProxy extends AbstractProxy {
 
     /**
      * Creates proxied HTTP GET request to Tower4Clouds which returns the list of installed Monitoring Rules
-     * @return the request
+     * @return installed MonitoringRules in Tower4Clouds
      */
     public MonitoringRules listMonitoringRules(){
         return this.getJerseyClient().target(this.getEndpoint() + "/v1/monitoring-rules").request()
@@ -38,8 +38,8 @@ public class MonitorProxy extends AbstractProxy {
 
     /**
      * Creates proxied HTTP POST request to Tower4Clouds which installs the corresponding Monitoring Rules
-     * @param monitoringRules Monitoring Rule specified according to Tower4Clouds XML syntax
-     * @return the request
+     * @param monitoringRules MonitoringRules to install in Tower4Clouds
+     * @return String representing that the rules were installed properly
      */
      public String addMonitoringRules(MonitoringRules monitoringRules){
         Entity content = Entity.entity(monitoringRules, MediaType.APPLICATION_XML);
@@ -50,7 +50,7 @@ public class MonitorProxy extends AbstractProxy {
     /**
      * Creates proxied HTTP DELETE request which removes an installed Monitoring Rule in Tower4Clouds
      * @param monitoringRuleId of the desired Monitoring Rule. This ID may differ from SeaClouds Application ID
-     * @return the request
+     * @return String representing that the rules were removed properly
      */
     public String removeMonitoringRule(String monitoringRuleId){
         return this.getJerseyClient().target(this.getEndpoint() + "/v1/monitoring-rules/" + monitoringRuleId).request()

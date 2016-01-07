@@ -24,6 +24,10 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.ws.rs.client.Client;
 
+/**
+ * AbstractProxy holds the necessary information to configure a Client for each SeaClouds MicroServices
+ * each client is configured from Dropwizard YAML file. Please read README.md to further information.
+ */
 public abstract class AbstractProxy {
 
     @NotEmpty

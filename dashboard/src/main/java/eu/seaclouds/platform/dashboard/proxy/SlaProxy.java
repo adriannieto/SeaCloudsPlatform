@@ -37,9 +37,8 @@ public class SlaProxy extends AbstractProxy {
     /**
      * Creates proxied HTTP POST request to SeaClouds SLA core which installs a set of SLA Agreements
      * paired with the corresponding Monitoring Rules Monitoring Rules
-     *
-     * @param slaAgreement SLA Agreements to install specified in SeaClouds SLA syntax.
-     * @return the request
+     * @param slaAgreement SLA Agreement to install
+     * @return String representing that the Agreement was installed properly
      */
     public String addAgreement(Agreement slaAgreement) {
         Entity content = Entity.entity(slaAgreement, MediaType.APPLICATION_XML);
@@ -56,9 +55,8 @@ public class SlaProxy extends AbstractProxy {
 
     /**
      * Creates proxied HTTP DELETE request to SeaClouds SLA core which removes the SLA from the SLA Core
-     *
      * @param agreementId of the SLA Agreement to be removed. This ID may differ from SeaClouds Application ID
-     * @return the request
+     * @return String representing that the Agreement was removed  properly
      */
     public String removeAgreement(String agreementId) {
         Invocation invocation = this.getJerseyClient().target(this.getEndpoint() + "/agreements/" + agreementId).request()
@@ -73,8 +71,7 @@ public class SlaProxy extends AbstractProxy {
     /**
      * Creates proxied HTTP POST request to SeaClouds SLA core which notifies that the Monitoring Rules were installed
      * in Tower4Clouds. @see Issue #56
-     *
-     * @return the request
+     * @return String representing that the SLA was notified properly
      */
     public String notifyRulesReady(Agreement slaAgreement) {
         Entity content = Entity.entity("", MediaType.TEXT_PLAIN);
@@ -89,9 +86,8 @@ public class SlaProxy extends AbstractProxy {
 
     /**
      * Creates proxied HTTP GET request to SeaClouds SLA core which retrieves the Agreement details
-     *
      * @param agreementId of the desired agreement. This ID may differ from SeaClouds Application ID
-     * @return the request
+     * @return the Agreement
      */
     public Agreement getAgreement(String agreementId) {
         return this.getJerseyClient().target(this.getEndpoint() + "/agreements/" + agreementId).request()
@@ -103,9 +99,8 @@ public class SlaProxy extends AbstractProxy {
 
     /**
      * Creates proxied HTTP GET request to SeaClouds SLA which returns the Agreement according to the template id
-     *
-     * @param slaAgreementTemplateId
-     * @return the request
+     * @param slaAgreementTemplateId SLA Agreement template ID
+     * @return the Agreement
      */
     public Agreement getAgreementByTemplateId(String slaAgreementTemplateId) {
         return this.getJerseyClient().target(this.getEndpoint() + "/seaclouds/commands/fromtemplate?templateId=" + slaAgreementTemplateId).request()
@@ -117,9 +112,8 @@ public class SlaProxy extends AbstractProxy {
 
     /**
      * Creates proxied HTTP GET request to SeaClouds SLA core which retrieves the Agreement Status
-     *
-     * @param agreementId of the desired agreement This ID may differ from SeaClouds Application ID
-     * @return the request
+     * @param agreement to fetch the status
+     * @return the GuaranteeTermsStatus
      */
     public GuaranteeTermsStatus getAgreementStatus(Agreement agreement) {
         return this.getJerseyClient().target(this.getEndpoint() + "/agreements/" + agreement.getAgreementId() + "/guaranteestatus").request()
@@ -131,12 +125,11 @@ public class SlaProxy extends AbstractProxy {
 
     /**
      * Creates proxied HTTP GET request to SeaClouds SLA core which retrieves the Agreement Term Violations
-     *
-     * @param agreementId       of the desired agreement This ID may differ from SeaClouds Application ID
-     * @param guaranteeTermName term name of the corresponding agreement to retrieve the violations
-     * @return the request
+     * @param agreement which contains the guaranteeTerm to fetch
+     * @param guaranteeTerm to check violations
+     * @return the list of Violations for this <Agreement, GuaranteeTerm> pair
      */
-    public List<Violation> getAgreementViolations(Agreement agreement, GuaranteeTerm guaranteeTerm) {
+    public List<Violation> getGuaranteeTermViolations(Agreement agreement, GuaranteeTerm guaranteeTerm) {
         return this.getJerseyClient().target(this.getEndpoint() + "/violations?agreementId=" + agreement.getAgreementId() + "&guaranteeTerm=" + guaranteeTerm.getName()).request()
                 .header("Accept", MediaType.APPLICATION_XML)
                 .header("Content-Type", MediaType.APPLICATION_XML)

@@ -89,7 +89,7 @@ public class SlaResource implements Resource{
                 }
             }
 
-            return Response.ok(this.sla.getAgreementViolations(agreement, term)).build();
+            return Response.ok(this.sla.getGuaranteeTermViolations(agreement, term)).build();
         }
     }
 

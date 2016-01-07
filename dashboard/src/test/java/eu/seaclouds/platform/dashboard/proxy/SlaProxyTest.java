@@ -147,7 +147,7 @@ public class SlaProxyTest extends AbstractProxyTest<SlaProxy> {
 
         // GuaranteeTerm doesn't implement equals(), so we are going to check not null
         for(GuaranteeTerm term : agreement.getTerms().getAllTerms().getGuaranteeTerms()){
-            assertNotNull(this.getProxy().getAgreementViolations(agreement, term));
+            assertNotNull(this.getProxy().getGuaranteeTermViolations(agreement, term));
         }
 
     }

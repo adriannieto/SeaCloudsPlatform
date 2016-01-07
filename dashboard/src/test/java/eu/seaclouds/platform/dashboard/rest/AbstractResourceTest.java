@@ -42,7 +42,6 @@ import org.testng.annotations.BeforeMethod;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import static org.mockito.Matchers.any;
@@ -132,7 +131,7 @@ public abstract class AbstractResourceTest<T extends Resource> {
         when(this.slaProxy.getAgreement(anyString())).thenReturn(this.agreement);
         when(this.slaProxy.getAgreementByTemplateId(anyString())).thenReturn(this.agreement);
         when(this.slaProxy.getAgreementStatus(Matchers.<Agreement>any())).thenReturn(this.agreementStatus);
-        when(this.slaProxy.getAgreementViolations(Matchers.<Agreement>any(), Matchers.<GuaranteeTerm>any())).thenReturn(this.agreementTermViolations);
+        when(this.slaProxy.getGuaranteeTermViolations(Matchers.<Agreement>any(), Matchers.<GuaranteeTerm>any())).thenReturn(this.agreementTermViolations);
         when(this.slaProxy.notifyRulesReady(Matchers.<Agreement>any())).thenReturn(AbstractResourceTest.RANDOM_STRING);
         when(this.slaProxy.removeAgreement(anyString())).thenReturn(AbstractResourceTest.RANDOM_STRING);
     }
