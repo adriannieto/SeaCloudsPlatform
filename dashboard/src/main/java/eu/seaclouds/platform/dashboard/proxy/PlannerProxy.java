@@ -28,9 +28,8 @@ public class PlannerProxy extends AbstractProxy {
 
     /**
      * Creates proxied HTTP GET request to SeaClouds Planner which returns the monitoring rules according to the template id
-     *
-     * @param monitoringRuleTemplateId
-     * @return the request
+     * @param monitoringRuleTemplateId Monitoring Rules template id
+     * @return MonitoringRules ready to be installed in Tower4Clouds
      */
     public MonitoringRules getMonitoringRulesByTemplateId(String monitoringRuleTemplateId) {
         return this.getJerseyClient().target(this.getEndpoint() + "/planner/monitoringrules/" + monitoringRuleTemplateId).request()
@@ -40,9 +39,8 @@ public class PlannerProxy extends AbstractProxy {
 
     /**
      * Creates proxied HTTP POST request to SeaClouds Planner which returns a list TOSCA compliant SeaClouds ADP in JSON format
-     *
      * @param aam file compliant with SeaClouds AAM definition
-     * @return the request
+     * @return String representing a List of ADP files compliant with SeaClouds ADP definition
      */
     public String getAdps(String aam) {
         Entity content = Entity.entity(aam, MediaType.TEXT_PLAIN);
@@ -53,9 +51,8 @@ public class PlannerProxy extends AbstractProxy {
 
     /**
      * Creates proxied HTTP POST request to SeaClouds Planner which returns a SeaClouds TOSCA DAM file
-     *
      * @param adp file compliant with SeaClouds ADP definition
-     * @return the request
+     * @return TOSCA DAM compliant with SeaClouds TOSCA DAM definition
      */
     public String getDam(String adp) {
         Entity content = Entity.entity(adp, MediaType.TEXT_PLAIN);
