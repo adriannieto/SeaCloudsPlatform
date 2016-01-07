@@ -91,6 +91,7 @@
         <brooklyn.version>0.9.0-SNAPSHOT</brooklyn.version>
         <jetty.version>9.2.4.v20141103</jetty.version>
         <dropwizard.version>0.8.5</dropwizard.version>
+        <dropwizard-swagger.version>0.7.0</dropwizard-swagger.version>
         <httpcomponents.version>4.3.6</httpcomponents.version>
         <gson.version>2.3</gson.version>
         <json.version>20140107</json.version>
@@ -612,6 +613,11 @@
                 <groupId>io.dropwizard</groupId>
                 <artifactId>dropwizard-auth</artifactId>
                 <version>${dropwizard.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.federecio</groupId>
+                <artifactId>dropwizard-swagger</artifactId>
+                <version>${dropwizard-swagger.version}</version>
             </dependency>
 
             <dependency>

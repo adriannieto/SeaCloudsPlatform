@@ -216,6 +216,11 @@
             <artifactId>mapdb</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>io.federecio</groupId>
+            <artifactId>dropwizard-swagger</artifactId>
+        </dependency>
+
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.testng</groupId>

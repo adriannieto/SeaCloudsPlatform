@@ -19,6 +19,8 @@ package eu.seaclouds.platform.dashboard.rest;
 
 
 import com.codahale.metrics.annotation.Timed;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import eu.seaclouds.platform.dashboard.model.SeaCloudsApplicationData;
 import eu.seaclouds.platform.dashboard.model.SeaCloudsApplicationDataStorage;
 import eu.seaclouds.platform.dashboard.proxy.DeployerProxy;
@@ -38,6 +40,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Path("/monitor")
+@Api("/monitor")
 public class MonitorResource implements Resource{
     private static final Logger LOG = LoggerFactory.getLogger(MonitorResource.class);
 
@@ -56,6 +59,7 @@ public class MonitorResource implements Resource{
     @Produces(MediaType.APPLICATION_JSON)
     @Path("applications/{seacloudsId}/sensors")
     @Deprecated
+    @ApiOperation(value="Get Sensors from a SeaClouds Application")
     public Response getSensors(@PathParam("seacloudsId") String seacloudsId) throws IOException {
         if (seacloudsId == null) {
             LOG.error("Missing input parameters");
@@ -96,6 +100,7 @@ public class MonitorResource implements Resource{
     @Produces(MediaType.APPLICATION_JSON)
     @Path("applications/{seacloudsId}/metrics")
     @Deprecated
+    @ApiOperation(value="Get Metrics from a SeaClouds Application")
     public Response getMetrics(@PathParam("seacloudsId") String seacloudsId) throws IOException {
         if (seacloudsId == null) {
             LOG.error("Missing input parameters");
@@ -131,6 +136,7 @@ public class MonitorResource implements Resource{
     @Produces(MediaType.TEXT_PLAIN)
     @Path("applications/{seacloudsId}/entities/{brooklynEntityId}/metrics/{brooklynMetricId}")
     @Deprecated
+    @ApiOperation(value="Get Metric Value from a particular <SeaCloudsApplication, EntityId, MetricId> combination")
     public Response getMetricValue(@PathParam("seacloudsId") String seacloudsId,
                                    @PathParam("brooklynEntityId") String brooklynEntityId,
                                    @PathParam("brooklynMetricId") String brooklynMetricId) throws IOException {

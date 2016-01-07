@@ -19,6 +19,8 @@ package eu.seaclouds.platform.dashboard.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.google.gson.JsonObject;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import eu.seaclouds.platform.dashboard.proxy.DeployerProxy;
 import eu.seaclouds.platform.dashboard.proxy.MonitorProxy;
 import eu.seaclouds.platform.dashboard.proxy.PlannerProxy;
@@ -33,6 +35,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("/")
+@Api("/")
 public class CoreResource implements Resource{
     private static final Logger LOG = LoggerFactory.getLogger(CoreResource.class);
 
@@ -54,6 +57,7 @@ public class CoreResource implements Resource{
     @Timed
     @Produces(MediaType.APPLICATION_JSON)
     @Path("about")
+    @ApiOperation("Get SeaClouds Components endpoints")
     public Response getSeaCloudsInformation(){
         JsonObject jsonResponse = new JsonObject();
 
