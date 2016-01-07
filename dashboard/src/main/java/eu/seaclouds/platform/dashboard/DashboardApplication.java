@@ -25,6 +25,8 @@ import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.federecio.dropwizard.swagger.SwaggerBundle;
+import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 
 import javax.ws.rs.client.Client;
 
@@ -47,6 +49,20 @@ public class DashboardApplication extends Application<DashboardConfiguration> {
         // Routing static assets files
         bootstrap.addBundle(new AssetsBundle("/webapp", "/", "index.html"));
 
+        // Routing API documentation
+        bootstrap.addBundle(new SwaggerBundle<DashboardConfiguration>() {
+            @Override
+            protected SwaggerBundleConfiguration getSwaggerBundleConfiguration(DashboardConfiguration configuration) {
+                SwaggerBundleConfiguration swaggerBundleConfiguration = configuration.getSwaggerBundleConfiguration();
+                swaggerBundleConfiguration.setTitle("SeaClouds REST API");
+                swaggerBundleConfiguration.setDescription("This API allows to manage all the project functionality");
+                swaggerBundleConfiguration.setResourcePackage("eu.seaclouds.platform.dashboard.rest");
+                swaggerBundleConfiguration.setContact("dev@seaclouds-project.eu");
+                swaggerBundleConfiguration.setLicense("Apache 2.0");
+                swaggerBundleConfiguration.setLicenseUrl("http://www.apache.org/licenses/LICENSE-2.0");
+                return swaggerBundleConfiguration;
+            }
+        });
     }
 
     @Override

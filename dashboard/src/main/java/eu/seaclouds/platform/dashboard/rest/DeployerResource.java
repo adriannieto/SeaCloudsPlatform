@@ -19,6 +19,9 @@ package eu.seaclouds.platform.dashboard.rest;
 
 
 import com.codahale.metrics.annotation.Timed;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 import eu.atos.sla.parser.data.wsag.Agreement;
 import eu.seaclouds.platform.dashboard.model.SeaCloudsApplicationData;
 import eu.seaclouds.platform.dashboard.model.SeaCloudsApplicationDataStorage;
@@ -37,6 +40,7 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 
 @Path("/deployer")
+@Api("/deployer")
 public class DeployerResource implements Resource{
     private static final Logger LOG = LoggerFactory.getLogger(DeployerResource.class);
 
@@ -91,7 +95,8 @@ public class DeployerResource implements Resource{
     @Timed
     @Produces(MediaType.APPLICATION_JSON)
     @Path("applications")
-    public Response addApplication(String dam) {
+    @ApiOperation("Adds new application to SeaClouds Platform based on a SeaClouds-compliant TOSCA DAM specification")
+    public Response addApplication(@ApiParam() String dam) {
         SeaCloudsApplicationData seaCloudsApplication = null;
 
         if (dam == null) {
@@ -140,6 +145,7 @@ public class DeployerResource implements Resource{
     @Timed
     @Produces(MediaType.APPLICATION_JSON)
     @Path("applications")
+    @ApiOperation(value="List all SeaClouds deployed Applications")
     public Response listApplications() {
         return Response.ok(dataStore.listSeaCloudsApplicationData()).build();
     }
@@ -148,6 +154,7 @@ public class DeployerResource implements Resource{
     @Timed
     @Produces(MediaType.APPLICATION_JSON)
     @Path("applications/{seaCloudsId}")
+    @ApiOperation(value="Get SeaClouds Application details from the Deployer Component")
     public Response getApplication(@PathParam("seaCloudsId") String seaCloudsId) throws IOException {
         if (seaCloudsId == null) {
             LOG.error("Missing input parameters");
@@ -167,6 +174,7 @@ public class DeployerResource implements Resource{
     @Timed
     @Produces(MediaType.APPLICATION_JSON)
     @Path("applications/{seaCloudsId}")
+    @ApiOperation(value="Remove SeaClouds Application from SeaClouds")
     public Response removeApplication(@PathParam("seaCloudsId") String seaCloudsId) {
         if (seaCloudsId == null) {
             LOG.error("Missing input parameters");

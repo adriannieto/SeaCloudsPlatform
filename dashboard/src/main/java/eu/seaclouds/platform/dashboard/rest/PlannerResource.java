@@ -19,6 +19,9 @@ package eu.seaclouds.platform.dashboard.rest;
 
 
 import com.codahale.metrics.annotation.Timed;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 import eu.seaclouds.platform.dashboard.proxy.PlannerProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +31,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("/planner")
+@Api("/planner")
 public class PlannerResource implements Resource{
     private static final Logger LOG = LoggerFactory.getLogger(PlannerResource.class);
 
@@ -42,6 +46,7 @@ public class PlannerResource implements Resource{
     @Timed
     @Produces(MediaType.APPLICATION_XML)
     @Path("monitoringrules/{templateId}")
+    @ApiOperation(value="Get Monitoring Rules from the Monitoring Rule Template Id")
     public Response getMonitoringRulesById(@PathParam("templateId") String templateId) {
         if (templateId == null) {
             LOG.error("Missing input parameters");
@@ -56,7 +61,8 @@ public class PlannerResource implements Resource{
     @Timed
     @Produces("application/x-yaml")
     @Path("adps")
-    public Response getAdps(String aam) {
+    @ApiOperation("Get SeaClouds-compliant ADP list from an AAM document")
+    public Response getAdps(@ApiParam() String aam) {
         if (aam == null) {
             LOG.error("Missing input parameters");
             return Response.status(Response.Status.NOT_ACCEPTABLE).build();
@@ -69,7 +75,8 @@ public class PlannerResource implements Resource{
     @Timed
     @Produces("application/x-yaml")
     @Path("dam")
-    public Response getDam(String adp) {
+    @ApiOperation("Get SeaClouds-compliant TOSCA DAM from an ADP document")
+    public Response getDam(@ApiParam() String adp) {
         if (adp == null) {
             LOG.error("Missing input parameters");
             return Response.status(Response.Status.NOT_ACCEPTABLE).build();

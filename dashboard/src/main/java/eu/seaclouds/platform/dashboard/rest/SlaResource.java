@@ -19,6 +19,8 @@ package eu.seaclouds.platform.dashboard.rest;
 
 
 import com.codahale.metrics.annotation.Timed;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import eu.atos.sla.parser.data.wsag.Agreement;
 import eu.atos.sla.parser.data.wsag.GuaranteeTerm;
 import eu.seaclouds.platform.dashboard.model.SeaCloudsApplicationData;
@@ -32,6 +34,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("/sla")
+@Api("/sla")
 public class SlaResource implements Resource{
     private static final Logger LOG = LoggerFactory.getLogger(SlaResource.class);
 
@@ -48,6 +51,7 @@ public class SlaResource implements Resource{
     @Timed
     @Produces(MediaType.APPLICATION_JSON)
     @Path("agreements/{seaCloudsId}")
+    @ApiOperation(value="Get SLA Agreement for a particular SeaClouds Application Id")
     public Response getAgreement(@PathParam("seaCloudsId") String seaCloudsId) {
         if (seaCloudsId == null) {
             LOG.error("Missing input parameters");
@@ -67,6 +71,7 @@ public class SlaResource implements Resource{
     @Timed
     @Produces(MediaType.APPLICATION_JSON)
     @Path("agreements/{seaCloudsId}/terms/{termName}/violations")
+    @ApiOperation(value="Get SLA Agreement Term Violations for a particular SeaClouds Application Id and Term Name")
     public Response getViolations(@PathParam("seaCloudsId") String seaCloudsId, @PathParam("termName") String termName) {
         if (seaCloudsId == null || termName == null) {
             LOG.error("Missing input parameters");
@@ -97,6 +102,7 @@ public class SlaResource implements Resource{
     @Timed
     @Produces(MediaType.APPLICATION_JSON)
     @Path("agreements/{seaCloudsId}/status")
+    @ApiOperation(value="Get SLA Agreement Status for a particular SeaClouds Application Id")
     public Response getAgreementStatus(@PathParam("seaCloudsId") String seaCloudsId) {
         if (seaCloudsId == null) {
             LOG.error("Missing input parameters");

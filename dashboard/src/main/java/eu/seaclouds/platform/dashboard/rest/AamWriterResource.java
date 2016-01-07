@@ -21,6 +21,10 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.codahale.metrics.annotation.Timed;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,16 +32,19 @@ import eu.seaclouds.platform.planner.aamwriter.AamWriter;
 import eu.seaclouds.platform.planner.aamwriter.AamWriterException;
 
 @Path("/aamwriter")
+@Api("/aamwriter")
 @Produces(MediaType.TEXT_PLAIN)
 public class AamWriterResource implements Resource {
     private static final Logger LOG = LoggerFactory.getLogger(AamWriterResource.class);
     private static final AamWriter AAM_WRITER = new AamWriter();
 
     @POST
+    @Timed
     @Path("translate")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces("application/x-yaml")
-    public String translateDesignerModel(String topology) {
+    @ApiOperation("Get SeaClouds-compliant AAM from topology-editor")
+    public String translateDesignerModel(@ApiParam() String topology) {
         return AAM_WRITER.writeAam(topology);
     }
 

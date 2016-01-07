@@ -25,6 +25,7 @@ import eu.seaclouds.platform.dashboard.proxy.PlannerProxy;
 import eu.seaclouds.platform.dashboard.proxy.SlaProxy;
 import io.dropwizard.Configuration;
 import io.dropwizard.client.JerseyClientConfiguration;
+import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -34,6 +35,9 @@ public class DashboardConfiguration extends Configuration {
     @Valid
     @NotNull
     private final JerseyClientConfiguration jerseyClient = new JerseyClientConfiguration();
+
+    @NotNull
+    private SwaggerBundleConfiguration swaggerBundleConfiguration = new SwaggerBundleConfiguration();
 
     @Valid
     @NotNull
@@ -51,10 +55,14 @@ public class DashboardConfiguration extends Configuration {
     @NotNull
     private SlaProxy sla = new SlaProxy();
 
-
     @JsonProperty("jerseyClient")
     public JerseyClientConfiguration getJerseyClientConfiguration() {
         return jerseyClient;
+    }
+
+    @JsonProperty("swaggerApi")
+    public SwaggerBundleConfiguration getSwaggerBundleConfiguration() {
+        return swaggerBundleConfiguration;
     }
 
     @JsonProperty("planner")
@@ -64,7 +72,7 @@ public class DashboardConfiguration extends Configuration {
 
     @JsonProperty("planner")
     public void setPlannerProxy(PlannerProxy factory) {
-        this.planner = factory;
+        planner = factory;
     }
     
     @JsonProperty("deployer")
@@ -74,7 +82,7 @@ public class DashboardConfiguration extends Configuration {
 
     @JsonProperty("deployer")
     public void setDeployerProxy(DeployerProxy factory) {
-        this.deployer = factory;
+        deployer = factory;
     }
 
     @JsonProperty("monitor.manager")
@@ -84,7 +92,7 @@ public class DashboardConfiguration extends Configuration {
 
     @JsonProperty("monitor.manager")
     public void setMonitorConfigProxy(MonitorProxy factory) {
-        this.monitor = factory;
+        monitor = factory;
     }
 
     @JsonProperty("sla")
@@ -94,6 +102,6 @@ public class DashboardConfiguration extends Configuration {
 
     @JsonProperty("sla")
     public void setSlaProxy(SlaProxy factory) {
-        this.sla = factory;
+        sla = factory;
     }
 }
