@@ -26,32 +26,32 @@ import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
 public class PlannerResourceTest extends AbstractResourceTest<PlannerResource>{
-    PlannerResource resource = new PlannerResource(this.getPlannerProxy());
+    PlannerResource resource = new PlannerResource(getPlannerProxy());
     SeaCloudsApplicationData applicationData;
 
     @Override
     @BeforeMethod
     public void setUpMethod() throws Exception {
         super.setUpMethod();
-        this.applicationData = new SeaCloudsApplicationData(this.getDam());
-        SeaCloudsApplicationDataStorage.getInstance().addSeaCloudsApplicationData(this.applicationData);
+        applicationData = new SeaCloudsApplicationData(getDam());
+        SeaCloudsApplicationDataStorage.getInstance().addSeaCloudsApplicationData(applicationData);
     }
 
     @Test
     public void testGetMonitoringRulesById() throws Exception {
-        MonitoringRules rules = (MonitoringRules) this.resource.getMonitoringRulesById(this.applicationData.getAgreementTemplateId()).getEntity();
+        MonitoringRules rules = (MonitoringRules) resource.getMonitoringRulesById(applicationData.getAgreementTemplateId()).getEntity();
         assertNotNull(rules);
     }
 
     @Test
     public void testGetAdps() throws Exception {
-        assertNotNull(this.resource.getAdps(this.getTopology()).getEntity());
+        assertNotNull(resource.getAdps(getTopology()).getEntity());
     }
 
     @Test
     public void testGetDam() throws Exception {
-        String entity = (String) this.resource.getDam(this.getAdp()).getEntity();
+        String entity = (String) resource.getDam(getAdp()).getEntity();
         SeaCloudsApplicationData newApp = new SeaCloudsApplicationData(entity);
-        assertEquals(newApp.getToscaDam(), this.applicationData.getToscaDam());
+        assertEquals(newApp.getToscaDam(), applicationData.getToscaDam());
     }
 }

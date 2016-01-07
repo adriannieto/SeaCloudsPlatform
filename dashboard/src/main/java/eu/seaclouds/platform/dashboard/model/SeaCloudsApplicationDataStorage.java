@@ -39,51 +39,51 @@ public class SeaCloudsApplicationDataStorage {
     private static SeaCloudsApplicationDataStorage instance;
 
     public static SeaCloudsApplicationDataStorage getInstance() {
-        if (SeaCloudsApplicationDataStorage.instance == null) {
-            SeaCloudsApplicationDataStorage.instance = new SeaCloudsApplicationDataStorage(false);
+        if (instance == null) {
+            instance = new SeaCloudsApplicationDataStorage(false);
         }
 
-        return SeaCloudsApplicationDataStorage.instance;
+        return instance;
     }
 
     private SeaCloudsApplicationDataStorage(boolean persistency) {
         if (!persistency) {
-            SeaCloudsApplicationDataStorage.LOG.warn("Persistency not enabled, the information will be lost after the application is closed");
-            SeaCloudsApplicationDataStorage.dataStore = DBMaker.newMemoryDB().make();
+            LOG.warn("Persistency not enabled, the information will be lost after the application is closed");
+            dataStore = DBMaker.newMemoryDB().make();
         } else {
-            SeaCloudsApplicationDataStorage.dataStore = DBMaker.newFileDB(new File(SeaCloudsApplicationDataStorage.SEACLOUDS_DB_FILENAME)).closeOnJvmShutdown().make();
-            SeaCloudsApplicationDataStorage.LOG.info("Persistency enabled, all the changes will be persisted to " + SeaCloudsApplicationDataStorage.SEACLOUDS_DB_FILENAME);
+            dataStore = DBMaker.newFileDB(new File(SEACLOUDS_DB_FILENAME)).closeOnJvmShutdown().make();
+            LOG.info("Persistency enabled, all the changes will be persisted to " + SEACLOUDS_DB_FILENAME);
         }
     }
 
     public SeaCloudsApplicationData addSeaCloudsApplicationData(SeaCloudsApplicationData newApplication) {
-        ConcurrentNavigableMap<String, SeaCloudsApplicationData> treeMap = SeaCloudsApplicationDataStorage.dataStore.getTreeMap(SeaCloudsApplicationDataStorage.SEACLOUDS_APPLICATION_DATA_COLLECTION_TAG);
+        ConcurrentNavigableMap<String, SeaCloudsApplicationData> treeMap = dataStore.getTreeMap(SEACLOUDS_APPLICATION_DATA_COLLECTION_TAG);
         treeMap.put(newApplication.getSeaCloudsApplicationId(), newApplication);
-        SeaCloudsApplicationDataStorage.dataStore.commit();
+        dataStore.commit();
         return newApplication;
     }
 
     public SeaCloudsApplicationData getSeaCloudsApplicationDataById(String id) {
-        ConcurrentNavigableMap<String, SeaCloudsApplicationData> treeMap = SeaCloudsApplicationDataStorage.dataStore.getTreeMap(SeaCloudsApplicationDataStorage.SEACLOUDS_APPLICATION_DATA_COLLECTION_TAG);
+        ConcurrentNavigableMap<String, SeaCloudsApplicationData> treeMap = dataStore.getTreeMap(SEACLOUDS_APPLICATION_DATA_COLLECTION_TAG);
         SeaCloudsApplicationData seaCloudsApplicationData = treeMap.get(id);
         return seaCloudsApplicationData;
     }
 
     public List<SeaCloudsApplicationData> listSeaCloudsApplicationData() {
-        ConcurrentNavigableMap<String, SeaCloudsApplicationData> treeMap = SeaCloudsApplicationDataStorage.dataStore.getTreeMap(SeaCloudsApplicationDataStorage.SEACLOUDS_APPLICATION_DATA_COLLECTION_TAG);
+        ConcurrentNavigableMap<String, SeaCloudsApplicationData> treeMap = dataStore.getTreeMap(SEACLOUDS_APPLICATION_DATA_COLLECTION_TAG);
         Collection<SeaCloudsApplicationData> seaCloudsApplicationDataCollection = treeMap.values();
         return new ArrayList<>(seaCloudsApplicationDataCollection);
     }
 
     public SeaCloudsApplicationData removeSeaCloudsApplicationDataById(String id) {
-        ConcurrentNavigableMap<String, SeaCloudsApplicationData> treeMap = SeaCloudsApplicationDataStorage.dataStore.getTreeMap(SeaCloudsApplicationDataStorage.SEACLOUDS_APPLICATION_DATA_COLLECTION_TAG);
+        ConcurrentNavigableMap<String, SeaCloudsApplicationData> treeMap = dataStore.getTreeMap(SEACLOUDS_APPLICATION_DATA_COLLECTION_TAG);
         SeaCloudsApplicationData remove = treeMap.remove(id);
-        SeaCloudsApplicationDataStorage.dataStore.commit();
+        dataStore.commit();
         return remove;
     }
 
     public void clearDataStore(){
-        SeaCloudsApplicationDataStorage.dataStore.getTreeMap(SeaCloudsApplicationDataStorage.SEACLOUDS_APPLICATION_DATA_COLLECTION_TAG).clear();
-        SeaCloudsApplicationDataStorage.dataStore.commit();
+        dataStore.getTreeMap(SEACLOUDS_APPLICATION_DATA_COLLECTION_TAG).clear();
+        dataStore.commit();
     }
 }

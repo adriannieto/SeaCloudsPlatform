@@ -30,22 +30,22 @@ import java.util.Map;
 import static org.testng.Assert.assertEquals;
 
 public class MonitorResourceTest extends AbstractResourceTest<MonitorResource> {
-    private final MonitorResource monitorResource = new MonitorResource(this.getMonitorProxy(), this.getDeployerProxy());
+    private final MonitorResource monitorResource = new MonitorResource(getMonitorProxy(), getDeployerProxy());
     private SeaCloudsApplicationData applicationData;
 
     @Override
     @BeforeMethod
     public void setUpMethod() throws Exception {
         super.setUpMethod();
-        this.applicationData = new SeaCloudsApplicationData(this.getDam());
-        SeaCloudsApplicationDataStorage.getInstance().addSeaCloudsApplicationData(this.applicationData);
+        applicationData = new SeaCloudsApplicationData(getDam());
+        SeaCloudsApplicationDataStorage.getInstance().addSeaCloudsApplicationData(applicationData);
     }
 
     @Test
     public void testGetSensors() throws Exception {
 
         Map<EntitySummary, List<SensorSummary>> response =
-                (Map<EntitySummary, List<SensorSummary>>) this.monitorResource.getSensors(this.applicationData.getSeaCloudsApplicationId()).getEntity();
+                (Map<EntitySummary, List<SensorSummary>>) monitorResource.getSensors(applicationData.getSeaCloudsApplicationId()).getEntity();
 
         for(EntitySummary key : response.keySet()){
             assertEquals(response.get(key).size(), 5);
@@ -55,7 +55,7 @@ public class MonitorResourceTest extends AbstractResourceTest<MonitorResource> {
     @Test
     public void testGetMetrics() throws Exception {
         Map<EntitySummary, List<SensorSummary>> response =
-                (Map<EntitySummary, List<SensorSummary>>) this.monitorResource.getMetrics(this.applicationData.getSeaCloudsApplicationId()).getEntity();
+                (Map<EntitySummary, List<SensorSummary>>) monitorResource.getMetrics(applicationData.getSeaCloudsApplicationId()).getEntity();
 
         for(EntitySummary key : response.keySet()){
             assertEquals(response.get(key).size(), 2);
@@ -63,7 +63,7 @@ public class MonitorResourceTest extends AbstractResourceTest<MonitorResource> {
 
     @Test
     public void testGetMetricValue() throws Exception {
-        String response = (String) this.monitorResource.getMetricValue(this.applicationData.getSeaCloudsApplicationId(), AbstractResourceTest.RANDOM_STRING, AbstractResourceTest.RANDOM_STRING).getEntity();
+        String response = (String) monitorResource.getMetricValue(applicationData.getSeaCloudsApplicationId(), AbstractResourceTest.RANDOM_STRING, AbstractResourceTest.RANDOM_STRING).getEntity();
         assertEquals(Double.valueOf(response), 0.7d);
     }
 }

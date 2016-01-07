@@ -18,6 +18,7 @@
 package eu.seaclouds.platform.dashboard;
 
 import com.codahale.metrics.health.HealthCheck;
+import com.codahale.metrics.health.HealthCheck.Result;
 import eu.seaclouds.platform.dashboard.rest.*;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
@@ -43,13 +44,13 @@ public class DashboardTestApplication extends Application<DashboardTestConfigura
     public void run(DashboardTestConfiguration configuration, Environment environment) throws Exception {
         // Generating  HTTP Clients
         Client jerseyClient = new JerseyClientBuilder(environment).using(configuration.getJerseyClientConfiguration())
-                .build(this.getName());
+                .build(getName());
 
         // Configuring HealthChecks
-        environment.healthChecks().register(this.getName(), new HealthCheck() {
+        environment.healthChecks().register(getName(), new HealthCheck() {
             @Override
-            protected HealthCheck.Result check() throws Exception {
-                return HealthCheck.Result.healthy();
+            protected Result check() throws Exception {
+                return Result.healthy();
             }
         });
 

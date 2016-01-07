@@ -38,7 +38,7 @@ public class AamWriterResource implements Resource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces("application/x-yaml")
     public String translateDesignerModel(String topology) {
-        return AamWriterResource.AAM_WRITER.writeAam(topology);
+        return AAM_WRITER.writeAam(topology);
     }
 
 }

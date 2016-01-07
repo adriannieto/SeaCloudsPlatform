@@ -18,6 +18,7 @@
 package eu.seaclouds.platform.dashboard;
 
 import com.codahale.metrics.health.HealthCheck;
+import com.codahale.metrics.health.HealthCheck.Result;
 import eu.seaclouds.platform.dashboard.proxy.DeployerProxy;
 import eu.seaclouds.platform.dashboard.proxy.MonitorProxy;
 import eu.seaclouds.platform.dashboard.proxy.PlannerProxy;
@@ -40,7 +41,7 @@ public class DashboardHealthCheck extends HealthCheck {
 
     private boolean portIsOpen(String ip, int port) {
         try (Socket socket = new Socket()) {
-            socket.connect(new InetSocketAddress(ip, port), DashboardHealthCheck.TIMEOUT);
+            socket.connect(new InetSocketAddress(ip, port), TIMEOUT);
             socket.close();
             return true;
         } catch (Exception ex) {
@@ -56,29 +57,29 @@ public class DashboardHealthCheck extends HealthCheck {
     }
 
     public String getName(){
-        return DashboardHealthCheck.NAME;
+        return NAME;
     }
 
     @Override
-    protected HealthCheck.Result check() throws Exception {
-        DashboardHealthCheck.LOG.warn("This is NOT an integration test. The current Healthcheck only checks if all the endpoints are reachable");
+    protected Result check() throws Exception {
+        LOG.warn("This is NOT an integration test. The current Healthcheck only checks if all the endpoints are reachable");
 
-        if(!this.portIsOpen(this.deployer.getHost(), this.deployer.getPort())){
-            return HealthCheck.Result.unhealthy("The Deployer endpoint is not ready");
+        if(!portIsOpen(deployer.getHost(), deployer.getPort())){
+            return Result.unhealthy("The Deployer endpoint is not ready");
         }
 
-        if(!this.portIsOpen(this.monitor.getHost(), this.monitor.getPort())){
-            return HealthCheck.Result.unhealthy("The Monitor endpoint is not ready");
+        if(!portIsOpen(monitor.getHost(), monitor.getPort())){
+            return Result.unhealthy("The Monitor endpoint is not ready");
         }
 
-        if(!this.portIsOpen(this.sla.getHost(), this.sla.getPort())) {
-            return HealthCheck.Result.unhealthy("The SLA endpoint is not ready");
+        if(!portIsOpen(sla.getHost(), sla.getPort())) {
+            return Result.unhealthy("The SLA endpoint is not ready");
         }
 
-        if(!this.portIsOpen(this.planner.getHost(), this.planner.getPort())){
-            return HealthCheck.Result.unhealthy("The Planner endpoint is not ready");
+        if(!portIsOpen(planner.getHost(), planner.getPort())){
+            return Result.unhealthy("The Planner endpoint is not ready");
         }
 
-        return HealthCheck.Result.healthy();
+        return Result.healthy();
     }
 }

@@ -39,32 +39,32 @@ public class DeployerProxyTest extends AbstractProxyTest<DeployerProxy> {
 
     @Override
     public DeployerProxy getProxy() {
-        return this.getSupport().getConfiguration().getDeployerProxy();
+        return getSupport().getConfiguration().getDeployerProxy();
     }
 
     @Test
     public void testGetApplication() throws Exception {
         String json = TestUtils.getStringFromPath(TestFixtures.APPLICATION_PATH);
 
-        this.getMockWebServer().enqueue(new MockResponse()
+        getMockWebServer().enqueue(new MockResponse()
                         .setBody(json)
                         .setHeader("Accept", MediaType.APPLICATION_JSON)
                         .setHeader("Content-Type", MediaType.APPLICATION_JSON)
         );
-        assertEquals(ObjectMapperHelpers.JsonToObject(json, ApplicationSummary.class), this.getProxy().getApplication(this.RANDOM_STRING));
+        assertEquals(ObjectMapperHelpers.JsonToObject(json, ApplicationSummary.class), getProxy().getApplication(RANDOM_STRING));
     }
 
     @Test
     public void testRemoveApplication() throws Exception {
         String json = TestUtils.getStringFromPath(TestFixtures.TASK_SUMMARY_DELETE_PATH);
 
-        this.getMockWebServer().enqueue(new MockResponse()
+        getMockWebServer().enqueue(new MockResponse()
                         .setBody(json)
                         .setHeader("Accept", MediaType.APPLICATION_JSON)
                         .setHeader("Content-Type", MediaType.APPLICATION_JSON)
         );
 
-        TaskSummary response = this.getProxy().removeApplication(this.RANDOM_STRING);
+        TaskSummary response = getProxy().removeApplication(RANDOM_STRING);
 
         // TaskSummary doesn't implement equals(), so we are going to check the IDs
         TaskSummary fixture = ObjectMapperHelpers.JsonToObject(json, TaskSummary.class);
@@ -76,12 +76,12 @@ public class DeployerProxyTest extends AbstractProxyTest<DeployerProxy> {
         String json = TestUtils.getStringFromPath(TestFixtures.TASK_SUMMARY_DEPLOY_PATH);
         String tosca = TestUtils.getStringFromPath(TestFixtures.TOSCA_DAM_PATH);
 
-        this.getMockWebServer().enqueue(new MockResponse()
+        getMockWebServer().enqueue(new MockResponse()
                         .setBody(json)
                         .setHeader("Accept", MediaType.APPLICATION_JSON)
                         .setHeader("Content-Type", MediaType.APPLICATION_JSON)
         );
-        TaskSummary response = this.getProxy().deployApplication(tosca);
+        TaskSummary response = getProxy().deployApplication(tosca);
 
         // TaskSummary doesn't implement equals(), so we are going to check the IDs
         TaskSummary fixture = ObjectMapperHelpers.JsonToObject(json, TaskSummary.class);
@@ -92,12 +92,12 @@ public class DeployerProxyTest extends AbstractProxyTest<DeployerProxy> {
     public void testGetEntitiesFromApplication() throws Exception {
         String json = TestUtils.getStringFromPath(TestFixtures.ENTITIES_PATH);
 
-        this.getMockWebServer().enqueue(new MockResponse()
+        getMockWebServer().enqueue(new MockResponse()
                         .setBody(json)
                         .setHeader("Accept", MediaType.APPLICATION_JSON)
                         .setHeader("Content-Type", MediaType.APPLICATION_JSON)
         );
-        List<EntitySummary> response = this.getProxy().getEntitiesFromApplication(this.RANDOM_STRING);
+        List<EntitySummary> response = getProxy().getEntitiesFromApplication(RANDOM_STRING);
 
         List<EntitySummary> fixture = ObjectMapperHelpers.JsonToObjectCollection(json, EntitySummary.class);
         assertEquals(fixture, response);
@@ -107,12 +107,12 @@ public class DeployerProxyTest extends AbstractProxyTest<DeployerProxy> {
     public void testGetEntitySensors() throws Exception {
         String json = TestUtils.getStringFromPath(TestFixtures.SENSORS_SUMMARIES_PATH);
 
-        this.getMockWebServer().enqueue(new MockResponse()
+        getMockWebServer().enqueue(new MockResponse()
                         .setBody(json)
                         .setHeader("Accept", MediaType.APPLICATION_JSON)
                         .setHeader("Content-Type", MediaType.APPLICATION_JSON)
         );
-        List<SensorSummary> response = this.getProxy().getEntitySensors(this.RANDOM_STRING, this.RANDOM_STRING);
+        List<SensorSummary> response = getProxy().getEntitySensors(RANDOM_STRING, RANDOM_STRING);
 
         List<SensorSummary> fixture = ObjectMapperHelpers.JsonToObjectCollection(json, SensorSummary.class);
         assertEquals(fixture, response);
@@ -120,13 +120,13 @@ public class DeployerProxyTest extends AbstractProxyTest<DeployerProxy> {
 
     @Test
     public void testGetEntitySensorsValue() throws Exception {
-        this.getMockWebServer().enqueue(new MockResponse()
+        getMockWebServer().enqueue(new MockResponse()
                         .setBody("0.7")
                         .setHeader("Accept", MediaType.APPLICATION_JSON)
                         .setHeader("Content-Type", MediaType.APPLICATION_JSON)
         );
 
-        String response = this.getProxy().getEntitySensorsValue(this.RANDOM_STRING, this.RANDOM_STRING, this.RANDOM_STRING);
+        String response = getProxy().getEntitySensorsValue(RANDOM_STRING, RANDOM_STRING, RANDOM_STRING);
         assertEquals("0.7", response);
     }
 }

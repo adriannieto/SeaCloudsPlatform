@@ -43,7 +43,7 @@ public abstract class AbstractProxy {
 
     @JsonProperty
     public String getHost() {
-        return this.host;
+        return host;
     }
 
     @JsonProperty
@@ -53,7 +53,7 @@ public abstract class AbstractProxy {
 
     @JsonProperty
     public int getPort() {
-        return this.port;
+        return port;
     }
 
     @JsonProperty
@@ -63,7 +63,7 @@ public abstract class AbstractProxy {
 
     @JsonProperty
     public String getUser() {
-        return this.user;
+        return user;
     }
 
     @JsonProperty
@@ -73,7 +73,7 @@ public abstract class AbstractProxy {
 
     @JsonProperty
     public String getPassword() {
-        return this.password;
+        return password;
     }
 
     @JsonProperty
@@ -82,7 +82,7 @@ public abstract class AbstractProxy {
     }
 
     public Client getJerseyClient() {
-        return this.jerseyClient;
+        return jerseyClient;
     }
 
     public void setJerseyClient(Client jerseyClient) {
@@ -90,6 +90,6 @@ public abstract class AbstractProxy {
     }
 
     public String getEndpoint() {
-        return this.host.startsWith("http://") ? this.host + ":" + this.port : "http://" + this.host + ":" + this.port;
+        return host.startsWith("http://") ? host + ":" + port : "http://" + host + ":" + port;
     }
 }

@@ -48,52 +48,52 @@ public class SeaCloudsApplicationData implements Serializable {
     private String agreementId;
 
     public SeaCloudsApplicationData(String toscaDam) {
-        seaCloudsApplicationId = UUID.randomUUID().toString();
+        this.seaCloudsApplicationId = UUID.randomUUID().toString();
         Yaml yamlParser = new Yaml();
-        toscaDamMap = (Map) yamlParser.load(toscaDam);
-        name = SeaCloudsApplicationData.extractName(toscaDamMap);
-        monitoringRulesTemplateId = SeaCloudsApplicationData.extractMonitoringRulesemplateId(toscaDamMap);
-        agreementTemplateId = SeaCloudsApplicationData.extractAgreementTemplateId(toscaDamMap);
+        this.toscaDamMap = (Map) yamlParser.load(toscaDam);
+        this.name = extractName(this.toscaDamMap);
+        this.monitoringRulesTemplateId = extractMonitoringRulesemplateId(this.toscaDamMap);
+        this.agreementTemplateId = extractAgreementTemplateId(this.toscaDamMap);
 
     }
 
     SeaCloudsApplicationData(Map toscaDamMap) {
-        seaCloudsApplicationId = UUID.randomUUID().toString();
+        this.seaCloudsApplicationId = UUID.randomUUID().toString();
         this.toscaDamMap = toscaDamMap;
-        name = SeaCloudsApplicationData.extractName(this.toscaDamMap);
-        monitoringRulesTemplateId = SeaCloudsApplicationData.extractMonitoringRulesemplateId(this.toscaDamMap);
-        agreementTemplateId = SeaCloudsApplicationData.extractAgreementTemplateId(this.toscaDamMap);
+        this.name = extractName(this.toscaDamMap);
+        this.monitoringRulesTemplateId = extractMonitoringRulesemplateId(this.toscaDamMap);
+        this.agreementTemplateId = extractAgreementTemplateId(this.toscaDamMap);
 
     }
 
     static String extractName(Map toscaDamMap) {
-        return (String) toscaDamMap.get(SeaCloudsApplicationData.YAML_DESCRIPTION_TAG);
+        return (String) toscaDamMap.get(YAML_DESCRIPTION_TAG);
     }
 
     static String extractAgreementTemplateId(Map toscaDamMap) {
-        Map topologyTemplate = (Map) toscaDamMap.get(SeaCloudsApplicationData.YAML_TOPOLOGY_TEMPLATE_TAG);
-        Map groups = (Map) topologyTemplate.get(SeaCloudsApplicationData.YAML_GROUPS_TEMPLATE_TAG);
-        Map monitoringInformation = (Map) groups.get(SeaCloudsApplicationData.YAML_AGREEMENT_TAG);
-        Map policies = (Map)((List)  monitoringInformation.get(SeaCloudsApplicationData.YAML_POLICIES_TAG)).get(0);
-        return (String) policies.get(SeaCloudsApplicationData.YAML_ID_TAG);
+        Map topologyTemplate = (Map) toscaDamMap.get(YAML_TOPOLOGY_TEMPLATE_TAG);
+        Map groups = (Map) topologyTemplate.get(YAML_GROUPS_TEMPLATE_TAG);
+        Map monitoringInformation = (Map) groups.get(YAML_AGREEMENT_TAG);
+        Map policies = (Map)((List)  monitoringInformation.get(YAML_POLICIES_TAG)).get(0);
+        return (String) policies.get(YAML_ID_TAG);
     }
 
     static String extractMonitoringRulesemplateId(Map toscaDamMap) {
-        Map topologyTemplate = (Map) toscaDamMap.get(SeaCloudsApplicationData.YAML_TOPOLOGY_TEMPLATE_TAG);
-        Map groups = (Map) topologyTemplate.get(SeaCloudsApplicationData.YAML_GROUPS_TEMPLATE_TAG);
-        Map slaGenInfo = (Map) groups.get(SeaCloudsApplicationData.YAML_MONITORING_INFORMATION_TAG);
-        Map policies = (Map) ((List) slaGenInfo.get(SeaCloudsApplicationData.YAML_POLICIES_TAG)).get(0);
-        return (String) policies.get(SeaCloudsApplicationData.YAML_ID_TAG);
+        Map topologyTemplate = (Map) toscaDamMap.get(YAML_TOPOLOGY_TEMPLATE_TAG);
+        Map groups = (Map) topologyTemplate.get(YAML_GROUPS_TEMPLATE_TAG);
+        Map slaGenInfo = (Map) groups.get(YAML_MONITORING_INFORMATION_TAG);
+        Map policies = (Map) ((List) slaGenInfo.get(YAML_POLICIES_TAG)).get(0);
+        return (String) policies.get(YAML_ID_TAG);
     }
 
 
 
     public void setDeployerApplicationId(ApplicationSummary application) {
-        deployerApplicationId = application.getId();
+        this.deployerApplicationId = application.getId();
     }
 
     public void setDeployerApplicationId(TaskSummary applicationTask) {
-        deployerApplicationId = applicationTask.getEntityId();
+        this.deployerApplicationId = applicationTask.getEntityId();
     }
 
     public void setMonitoringRulesIds(MonitoringRules monitoringRules) {
@@ -102,61 +102,61 @@ public class SeaCloudsApplicationData implements Serializable {
             rulesIdSet.add(rule.getId());
         }
 
-        monitoringRulesIds = rulesIdSet;
+        this.monitoringRulesIds = rulesIdSet;
     }
 
     public void setAgreementId(Agreement agreement) {
-        agreementId = agreement.getAgreementId();
+        this.agreementId = agreement.getAgreementId();
     }
 
     public String getSeaCloudsApplicationId() {
-        return this.seaCloudsApplicationId;
+        return seaCloudsApplicationId;
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public String getMonitoringRulesTemplateId() {
-        return this.monitoringRulesTemplateId;
+        return monitoringRulesTemplateId;
     }
 
     public String getAgreementTemplateId() {
-        return this.agreementTemplateId;
+        return agreementTemplateId;
     }
 
     public Set<String> getMonitoringRulesIds() {
-        return this.monitoringRulesIds;
+        return monitoringRulesIds;
     }
 
     public String getAgreementId() {
-        return this.agreementId;
+        return agreementId;
     }
 
     public String getToscaDam() {
         Yaml yamlParser = new Yaml();
-        return yamlParser.dump(this.toscaDamMap);
+        return yamlParser.dump(toscaDamMap);
     }
 
     public String getDeployerApplicationId() {
-        return this.deployerApplicationId;
+        return deployerApplicationId;
     }
 
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         SeaCloudsApplicationData that = (SeaCloudsApplicationData) o;
 
-        return this.seaCloudsApplicationId.equals(that.seaCloudsApplicationId);
+        return seaCloudsApplicationId.equals(that.seaCloudsApplicationId);
 
     }
 
     @Override
     public int hashCode() {
-        return this.seaCloudsApplicationId.hashCode();
+        return seaCloudsApplicationId.hashCode();
     }
 
 }

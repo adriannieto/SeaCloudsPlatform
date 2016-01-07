@@ -43,34 +43,34 @@ public class SeaCloudsApplicationDataTest {
     @BeforeMethod
     public void setUp() throws Exception {
         Yaml yamlParser = new Yaml();
-        URL resource = Resources.getResource(SeaCloudsApplicationDataTest.TOSCA_DAM_FILE_PATH);
-        this.toscaDamMap = (Map) yamlParser.load(FileUtils.openInputStream(new File(resource.getFile())));
+        URL resource = Resources.getResource(TOSCA_DAM_FILE_PATH);
+        toscaDamMap = (Map) yamlParser.load(FileUtils.openInputStream(new File(resource.getFile())));
     }
 
     @Test
     public void testExtractName() {
-        String toscaDamName = SeaCloudsApplicationData.extractName(this.toscaDamMap);
-        assertEquals(toscaDamName, SeaCloudsApplicationDataTest.DESCRIPTION);
+        String toscaDamName = SeaCloudsApplicationData.extractName(toscaDamMap);
+        assertEquals(toscaDamName, DESCRIPTION);
     }
 
     @Test
     public void testExtractAgreementTemplateId() {
-        String toscaAgreementTemplateId = SeaCloudsApplicationData.extractAgreementTemplateId(this.toscaDamMap);
-        assertEquals(toscaAgreementTemplateId, SeaCloudsApplicationDataTest.AGREEMENT_TEMPLATE_ID);
+        String toscaAgreementTemplateId = SeaCloudsApplicationData.extractAgreementTemplateId(toscaDamMap);
+        assertEquals(toscaAgreementTemplateId, AGREEMENT_TEMPLATE_ID);
     }
 
     @Test
     public void testExtractMonitoringRulesemplateId() {
-        String monitoringRulesId = SeaCloudsApplicationData.extractMonitoringRulesemplateId(this.toscaDamMap);
-        assertEquals(monitoringRulesId, SeaCloudsApplicationDataTest.MONITORING_RULES_TEMPLATE_ID);
+        String monitoringRulesId = SeaCloudsApplicationData.extractMonitoringRulesemplateId(toscaDamMap);
+        assertEquals(monitoringRulesId, MONITORING_RULES_TEMPLATE_ID);
     }
 
     @Test
     public void testCreateSeaCloudsApplicationData(){
-        SeaCloudsApplicationData application = new SeaCloudsApplicationData(this.toscaDamMap);
-        assertEquals(application.getName(), SeaCloudsApplicationDataTest.DESCRIPTION);
-        assertEquals(application.getAgreementTemplateId(), SeaCloudsApplicationDataTest.AGREEMENT_TEMPLATE_ID);
-        assertEquals(application.getMonitoringRulesTemplateId(), SeaCloudsApplicationDataTest.MONITORING_RULES_TEMPLATE_ID);
+        SeaCloudsApplicationData application = new SeaCloudsApplicationData(toscaDamMap);
+        assertEquals(application.getName(), DESCRIPTION);
+        assertEquals(application.getAgreementTemplateId(), AGREEMENT_TEMPLATE_ID);
+        assertEquals(application.getMonitoringRulesTemplateId(), MONITORING_RULES_TEMPLATE_ID);
     }
 
 }

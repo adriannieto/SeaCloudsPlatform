@@ -32,7 +32,7 @@ public class MonitorProxy extends AbstractProxy {
      * @return installed MonitoringRules in Tower4Clouds
      */
     public MonitoringRules listMonitoringRules(){
-        return this.getJerseyClient().target(this.getEndpoint() + "/v1/monitoring-rules").request()
+        return getJerseyClient().target(getEndpoint() + "/v1/monitoring-rules").request()
                 .buildGet().invoke().readEntity(MonitoringRules.class);
     }
 
@@ -43,7 +43,7 @@ public class MonitorProxy extends AbstractProxy {
      */
      public String addMonitoringRules(MonitoringRules monitoringRules){
         Entity content = Entity.entity(monitoringRules, MediaType.APPLICATION_XML);
-        Invocation invocation = this.getJerseyClient().target(this.getEndpoint() + "/v1/monitoring-rules").request().buildPost(content);
+        Invocation invocation = getJerseyClient().target(getEndpoint() + "/v1/monitoring-rules").request().buildPost(content);
         return  invocation.invoke().readEntity(String.class);
     }
 
@@ -53,7 +53,7 @@ public class MonitorProxy extends AbstractProxy {
      * @return String representing that the rules were removed properly
      */
     public String removeMonitoringRule(String monitoringRuleId){
-        return this.getJerseyClient().target(this.getEndpoint() + "/v1/monitoring-rules/" + monitoringRuleId).request()
+        return getJerseyClient().target(getEndpoint() + "/v1/monitoring-rules/" + monitoringRuleId).request()
                 .buildDelete().invoke().readEntity(String.class);
     }
 

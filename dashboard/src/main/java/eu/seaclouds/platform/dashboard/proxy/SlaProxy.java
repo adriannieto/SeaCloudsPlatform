@@ -43,7 +43,7 @@ public class SlaProxy extends AbstractProxy {
     public String addAgreement(Agreement slaAgreement) {
         Entity content = Entity.entity(slaAgreement, MediaType.APPLICATION_XML);
 
-        Invocation invocation = this.getJerseyClient().target(this.getEndpoint() + "/seaclouds/agreements").request()
+        Invocation invocation = getJerseyClient().target(getEndpoint() + "/seaclouds/agreements").request()
                 .header("Accept", MediaType.APPLICATION_JSON)
                 .header("Content-Type", MediaType.APPLICATION_XML)
                 .buildPost(content);
@@ -59,7 +59,7 @@ public class SlaProxy extends AbstractProxy {
      * @return String representing that the Agreement was removed  properly
      */
     public String removeAgreement(String agreementId) {
-        Invocation invocation = this.getJerseyClient().target(this.getEndpoint() + "/agreements/" + agreementId).request()
+        Invocation invocation = getJerseyClient().target(getEndpoint() + "/agreements/" + agreementId).request()
                 .header("Accept", MediaType.APPLICATION_XML)
                 .header("Content-Type", MediaType.APPLICATION_XML)
                 .buildDelete();
@@ -75,7 +75,7 @@ public class SlaProxy extends AbstractProxy {
      */
     public String notifyRulesReady(Agreement slaAgreement) {
         Entity content = Entity.entity("", MediaType.TEXT_PLAIN);
-        Invocation invocation = this.getJerseyClient().target(this.getEndpoint() + "/seaclouds/commands/rulesready?agreementId=" + slaAgreement.getAgreementId()).request()
+        Invocation invocation = getJerseyClient().target(getEndpoint() + "/seaclouds/commands/rulesready?agreementId=" + slaAgreement.getAgreementId()).request()
                 .header("Accept", MediaType.APPLICATION_XML)
                 .header("Content-Type", MediaType.APPLICATION_XML)
                 .buildPost(content);
@@ -90,7 +90,7 @@ public class SlaProxy extends AbstractProxy {
      * @return the Agreement
      */
     public Agreement getAgreement(String agreementId) {
-        return this.getJerseyClient().target(this.getEndpoint() + "/agreements/" + agreementId).request()
+        return getJerseyClient().target(getEndpoint() + "/agreements/" + agreementId).request()
                 .header("Accept", MediaType.APPLICATION_XML)
                 .header("Content-Type", MediaType.APPLICATION_XML)
                 .buildGet().invoke().readEntity(Agreement.class);
@@ -103,7 +103,7 @@ public class SlaProxy extends AbstractProxy {
      * @return the Agreement
      */
     public Agreement getAgreementByTemplateId(String slaAgreementTemplateId) {
-        return this.getJerseyClient().target(this.getEndpoint() + "/seaclouds/commands/fromtemplate?templateId=" + slaAgreementTemplateId).request()
+        return getJerseyClient().target(getEndpoint() + "/seaclouds/commands/fromtemplate?templateId=" + slaAgreementTemplateId).request()
                 .header("Accept", MediaType.APPLICATION_XML)
                 .header("Content-Type", MediaType.APPLICATION_XML)
                 .buildGet().invoke().readEntity(Agreement.class);
@@ -116,7 +116,7 @@ public class SlaProxy extends AbstractProxy {
      * @return the GuaranteeTermsStatus
      */
     public GuaranteeTermsStatus getAgreementStatus(Agreement agreement) {
-        return this.getJerseyClient().target(this.getEndpoint() + "/agreements/" + agreement.getAgreementId() + "/guaranteestatus").request()
+        return getJerseyClient().target(getEndpoint() + "/agreements/" + agreement.getAgreementId() + "/guaranteestatus").request()
                 .header("Accept", MediaType.APPLICATION_XML)
                 .header("Content-Type", MediaType.APPLICATION_XML)
                 .buildGet().invoke().readEntity(GuaranteeTermsStatus.class);
@@ -130,7 +130,7 @@ public class SlaProxy extends AbstractProxy {
      * @return the list of Violations for this <Agreement, GuaranteeTerm> pair
      */
     public List<Violation> getGuaranteeTermViolations(Agreement agreement, GuaranteeTerm guaranteeTerm) {
-        return this.getJerseyClient().target(this.getEndpoint() + "/violations?agreementId=" + agreement.getAgreementId() + "&guaranteeTerm=" + guaranteeTerm.getName()).request()
+        return getJerseyClient().target(getEndpoint() + "/violations?agreementId=" + agreement.getAgreementId() + "&guaranteeTerm=" + guaranteeTerm.getName()).request()
                 .header("Accept", MediaType.APPLICATION_XML)
                 .header("Content-Type", MediaType.APPLICATION_XML)
                 .buildGet().invoke().readEntity(new GenericType<List<Violation>>() {

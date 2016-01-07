@@ -62,17 +62,17 @@ public class CoreResource implements Resource{
         JsonObject plannerObject = new JsonObject();
         JsonObject slaObject = new JsonObject();
 
-        deployerObject.addProperty("url", this.deployerProxy.getEndpoint());
+        deployerObject.addProperty("url", deployerProxy.getEndpoint());
         jsonResponse.add("deployer", deployerObject);
 
-        plannerObject.addProperty("url", this.plannerProxy.getEndpoint());
+        plannerObject.addProperty("url", plannerProxy.getEndpoint());
         jsonResponse.add("planner", plannerObject);
 
-        slaObject.addProperty("url", this.slaProxy.getEndpoint());
+        slaObject.addProperty("url", slaProxy.getEndpoint());
         jsonResponse.add("sla", slaObject);
 
         JsonObject tower4CloudsObject = new JsonObject();
-        tower4CloudsObject.addProperty("url", this.monitorProxy.getEndpoint());
+        tower4CloudsObject.addProperty("url", monitorProxy.getEndpoint());
         monitorObject.add("manager", tower4CloudsObject);
         jsonResponse.add("monitor", monitorObject);
 

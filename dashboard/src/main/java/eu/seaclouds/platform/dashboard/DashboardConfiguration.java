@@ -54,46 +54,46 @@ public class DashboardConfiguration extends Configuration {
 
     @JsonProperty("jerseyClient")
     public JerseyClientConfiguration getJerseyClientConfiguration() {
-        return this.jerseyClient;
+        return jerseyClient;
     }
 
     @JsonProperty("planner")
     public PlannerProxy getPlannerProxy() {
-        return this.planner;
+        return planner;
     }
 
     @JsonProperty("planner")
     public void setPlannerProxy(PlannerProxy factory) {
-        planner = factory;
+        this.planner = factory;
     }
     
     @JsonProperty("deployer")
     public DeployerProxy getDeployerProxy() {
-        return this.deployer;
+        return deployer;
     }
 
     @JsonProperty("deployer")
     public void setDeployerProxy(DeployerProxy factory) {
-        deployer = factory;
+        this.deployer = factory;
     }
 
     @JsonProperty("monitor.manager")
     public MonitorProxy getMonitorProxy() {
-        return this.monitor;
+        return monitor;
     }
 
     @JsonProperty("monitor.manager")
     public void setMonitorConfigProxy(MonitorProxy factory) {
-        monitor = factory;
+        this.monitor = factory;
     }
 
     @JsonProperty("sla")
     public SlaProxy getSlaProxy() {
-        return this.sla;
+        return sla;
     }
 
     @JsonProperty("sla")
     public void setSlaProxy(SlaProxy factory) {
-        sla = factory;
+        this.sla = factory;
     }
 }

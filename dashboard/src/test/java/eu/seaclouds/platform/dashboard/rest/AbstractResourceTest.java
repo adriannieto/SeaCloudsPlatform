@@ -77,69 +77,69 @@ public abstract class AbstractResourceTest<T extends Resource> {
     private final SlaProxy slaProxy = mock(SlaProxy.class);
 
     private void initObjects() throws IOException, JAXBException {
-        this.applicationSummary = ObjectMapperHelpers.JsonToObject(
+        applicationSummary = ObjectMapperHelpers.JsonToObject(
                 TestUtils.getStringFromPath(TestFixtures.APPLICATION_PATH), ApplicationSummary.class);
-        this.taskSummaryDeploy = ObjectMapperHelpers.JsonToObject(
+        taskSummaryDeploy = ObjectMapperHelpers.JsonToObject(
                 TestUtils.getStringFromPath(TestFixtures.TASK_SUMMARY_DEPLOY_PATH), TaskSummary.class);
-        this.taskSummaryDelete = ObjectMapperHelpers.JsonToObject(
+        taskSummaryDelete = ObjectMapperHelpers.JsonToObject(
                 TestUtils.getStringFromPath(TestFixtures.TASK_SUMMARY_DEPLOY_PATH), TaskSummary.class);
-        this.sensorSummaries = ObjectMapperHelpers.JsonToObjectCollection(
+        sensorSummaries = ObjectMapperHelpers.JsonToObjectCollection(
                 TestUtils.getStringFromPath(TestFixtures.SENSORS_SUMMARIES_PATH), SensorSummary.class);
-        this.entitySummaries = ObjectMapperHelpers.JsonToObjectCollection(
+        entitySummaries = ObjectMapperHelpers.JsonToObjectCollection(
                 TestUtils.getStringFromPath(TestFixtures.ENTITIES_PATH), EntitySummary.class);
 
 
-        this.agreement = ObjectMapperHelpers.XmlToObject(
+        agreement = ObjectMapperHelpers.XmlToObject(
                 TestUtils.getStringFromPath(TestFixtures.AGREEMENT_PATH_XML), Agreement.class);
-        this.agreementStatus = ObjectMapperHelpers.XmlToObject(
+        agreementStatus = ObjectMapperHelpers.XmlToObject(
                 TestUtils.getStringFromPath(TestFixtures.GUARRANTEE_TERMS_STATUS_PATH_XML), GuaranteeTermsStatus.class);
-        this.agreementTermViolations = ObjectMapperHelpers.XmlToObjectCollection(TestUtils.getStringFromPath(TestFixtures.VIOLATIONS_XML_PATH), Violation.class);
+        agreementTermViolations = ObjectMapperHelpers.XmlToObjectCollection(TestUtils.getStringFromPath(TestFixtures.VIOLATIONS_XML_PATH), Violation.class);
 
-        this.monitoringRules = ObjectMapperHelpers.XmlToObject(TestUtils.getStringFromPath(TestFixtures.MONITORING_RULES_PATH), MonitoringRules.class);
-        this.topology = TestUtils.getStringFromPath(TestFixtures.DESIGNER_TOPOLOGY);
+        monitoringRules = ObjectMapperHelpers.XmlToObject(TestUtils.getStringFromPath(TestFixtures.MONITORING_RULES_PATH), MonitoringRules.class);
+        topology = TestUtils.getStringFromPath(TestFixtures.DESIGNER_TOPOLOGY);
 
-        this.adp = TestUtils.getStringFromPath(TestFixtures.ADP_PATH);
-        this.adps = TestUtils.getStringFromPath(TestFixtures.ADPS_PATH);
-        this.aam = TestUtils.getStringFromPath(TestFixtures.AAM_PATH);
-        this.dam = TestUtils.getStringFromPath(TestFixtures.TOSCA_DAM_PATH);
+        adp = TestUtils.getStringFromPath(TestFixtures.ADP_PATH);
+        adps = TestUtils.getStringFromPath(TestFixtures.ADPS_PATH);
+        aam = TestUtils.getStringFromPath(TestFixtures.AAM_PATH);
+        dam = TestUtils.getStringFromPath(TestFixtures.TOSCA_DAM_PATH);
     }
 
     private void initMocks() throws IOException {
 
-        when(this.deployerProxy.getEndpoint()).thenReturn(AbstractResourceTest.DEPLOYER_ENDPOINT);
-        when(this.monitorProxy.getEndpoint()).thenReturn(AbstractResourceTest.MONITOR_ENDPOINT);
-        when(this.plannerProxy.getEndpoint()).thenReturn(AbstractResourceTest.PLANNER_ENDPOINT);
-        when(this.slaProxy.getEndpoint()).thenReturn(AbstractResourceTest.SLA_ENDPOINT);
+        when(deployerProxy.getEndpoint()).thenReturn(DEPLOYER_ENDPOINT);
+        when(monitorProxy.getEndpoint()).thenReturn(MONITOR_ENDPOINT);
+        when(plannerProxy.getEndpoint()).thenReturn(PLANNER_ENDPOINT);
+        when(slaProxy.getEndpoint()).thenReturn(SLA_ENDPOINT);
 
-        when(this.deployerProxy.getApplication(anyString())).thenReturn(this.applicationSummary);
-        when(this.deployerProxy.deployApplication(anyString())).thenReturn(this.taskSummaryDeploy);
-        when(this.deployerProxy.removeApplication(anyString())).thenReturn(this.taskSummaryDelete);
-        when(this.deployerProxy.getEntitiesFromApplication(anyString())).thenReturn(this.entitySummaries);
-        when(this.deployerProxy.getEntitySensors(anyString(), anyString())).thenReturn(this.sensorSummaries);
-        when(this.deployerProxy.getEntitySensorsValue(anyString(), anyString(), anyString())).thenReturn("0.7");
+        when(deployerProxy.getApplication(anyString())).thenReturn(applicationSummary);
+        when(deployerProxy.deployApplication(anyString())).thenReturn(taskSummaryDeploy);
+        when(deployerProxy.removeApplication(anyString())).thenReturn(taskSummaryDelete);
+        when(deployerProxy.getEntitiesFromApplication(anyString())).thenReturn(entitySummaries);
+        when(deployerProxy.getEntitySensors(anyString(), anyString())).thenReturn(sensorSummaries);
+        when(deployerProxy.getEntitySensorsValue(anyString(), anyString(), anyString())).thenReturn("0.7");
 
 
-        when(this.monitorProxy.addMonitoringRules(any(MonitoringRules.class))).thenReturn(AbstractResourceTest.RANDOM_STRING);
-        when(this.monitorProxy.listMonitoringRules()).thenReturn(this.monitoringRules);
-        when(this.monitorProxy.removeMonitoringRule(anyString())).thenReturn(AbstractResourceTest.RANDOM_STRING);
+        when(monitorProxy.addMonitoringRules(any(MonitoringRules.class))).thenReturn(RANDOM_STRING);
+        when(monitorProxy.listMonitoringRules()).thenReturn(monitoringRules);
+        when(monitorProxy.removeMonitoringRule(anyString())).thenReturn(RANDOM_STRING);
 
-        when(this.plannerProxy.getMonitoringRulesByTemplateId(anyString())).thenReturn(this.monitoringRules);
-        when(this.plannerProxy.getAdps(anyString())).thenReturn(this.adps);
-        when(this.plannerProxy.getDam(anyString())).thenReturn(this.dam);
+        when(plannerProxy.getMonitoringRulesByTemplateId(anyString())).thenReturn(monitoringRules);
+        when(plannerProxy.getAdps(anyString())).thenReturn(adps);
+        when(plannerProxy.getDam(anyString())).thenReturn(dam);
 
-        when(this.slaProxy.addAgreement(Matchers.<Agreement>any())).thenReturn(AbstractResourceTest.RANDOM_STRING);
-        when(this.slaProxy.getAgreement(anyString())).thenReturn(this.agreement);
-        when(this.slaProxy.getAgreementByTemplateId(anyString())).thenReturn(this.agreement);
-        when(this.slaProxy.getAgreementStatus(Matchers.<Agreement>any())).thenReturn(this.agreementStatus);
-        when(this.slaProxy.getGuaranteeTermViolations(Matchers.<Agreement>any(), Matchers.<GuaranteeTerm>any())).thenReturn(this.agreementTermViolations);
-        when(this.slaProxy.notifyRulesReady(Matchers.<Agreement>any())).thenReturn(AbstractResourceTest.RANDOM_STRING);
-        when(this.slaProxy.removeAgreement(anyString())).thenReturn(AbstractResourceTest.RANDOM_STRING);
+        when(slaProxy.addAgreement(Matchers.<Agreement>any())).thenReturn(RANDOM_STRING);
+        when(slaProxy.getAgreement(anyString())).thenReturn(agreement);
+        when(slaProxy.getAgreementByTemplateId(anyString())).thenReturn(agreement);
+        when(slaProxy.getAgreementStatus(Matchers.<Agreement>any())).thenReturn(agreementStatus);
+        when(slaProxy.getGuaranteeTermViolations(Matchers.<Agreement>any(), Matchers.<GuaranteeTerm>any())).thenReturn(agreementTermViolations);
+        when(slaProxy.notifyRulesReady(Matchers.<Agreement>any())).thenReturn(RANDOM_STRING);
+        when(slaProxy.removeAgreement(anyString())).thenReturn(RANDOM_STRING);
     }
 
     @BeforeClass
     public void setupClass() throws Exception {
-        this.initObjects();
-        this.initMocks();
+        initObjects();
+        initMocks();
     }
 
     @BeforeMethod
@@ -152,75 +152,75 @@ public abstract class AbstractResourceTest<T extends Resource> {
     }
 
     public ApplicationSummary getApplicationSummary() {
-        return this.applicationSummary;
+        return applicationSummary;
     }
 
     public TaskSummary getTaskSummaryDeploy() {
-        return this.taskSummaryDeploy;
+        return taskSummaryDeploy;
     }
 
     public TaskSummary getTaskSummaryDelete() {
-        return this.taskSummaryDelete;
+        return taskSummaryDelete;
     }
 
     public Agreement getAgreement() {
-        return this.agreement;
+        return agreement;
     }
 
     public GuaranteeTermsStatus getAgreementStatus() {
-        return this.agreementStatus;
+        return agreementStatus;
     }
 
     public List<Violation> getAgreementTermViolations() {
-        return this.agreementTermViolations;
+        return agreementTermViolations;
     }
 
     public MonitoringRules getMonitoringRules() {
-        return this.monitoringRules;
+        return monitoringRules;
     }
 
     public String getTopology() {
-        return this.topology;
+        return topology;
     }
 
     public String getAdp() {
-        return this.adp;
+        return adp;
     }
 
     public String getAdps() {
-        return this.adps;
+        return adps;
     }
 
     public String getAam() {
-        return this.aam;
+        return aam;
     }
 
     public String getDam() {
-        return this.dam;
+        return dam;
     }
 
     public DeployerProxy getDeployerProxy() {
-        return this.deployerProxy;
+        return deployerProxy;
     }
 
     public MonitorProxy getMonitorProxy() {
-        return this.monitorProxy;
+        return monitorProxy;
     }
 
     public PlannerProxy getPlannerProxy() {
-        return this.plannerProxy;
+        return plannerProxy;
     }
 
     public SlaProxy getSlaProxy() {
-        return this.slaProxy;
+        return slaProxy;
     }
 
 
     public List<SensorSummary> getSensorSummaries() {
-        return this.sensorSummaries;
+        return sensorSummaries;
     }
 
     public List<EntitySummary> getEntitySummaries() {
-        return this.entitySummaries;
+        return entitySummaries;
     }
 }

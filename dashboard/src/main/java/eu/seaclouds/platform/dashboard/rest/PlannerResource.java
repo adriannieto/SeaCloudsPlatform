@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
 @Path("/planner")
 public class PlannerResource implements Resource{
@@ -45,10 +44,10 @@ public class PlannerResource implements Resource{
     @Path("monitoringrules/{templateId}")
     public Response getMonitoringRulesById(@PathParam("templateId") String templateId) {
         if (templateId == null) {
-            PlannerResource.LOG.error("Missing input parameters");
-            return Response.status(Status.NOT_ACCEPTABLE).build();
+            LOG.error("Missing input parameters");
+            return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         } else {
-            return Response.ok(this.planner.getMonitoringRulesByTemplateId(templateId)).build();
+            return Response.ok(planner.getMonitoringRulesByTemplateId(templateId)).build();
         }
     }
 
@@ -59,10 +58,10 @@ public class PlannerResource implements Resource{
     @Path("adps")
     public Response getAdps(String aam) {
         if (aam == null) {
-            PlannerResource.LOG.error("Missing input parameters");
-            return Response.status(Status.NOT_ACCEPTABLE).build();
+            LOG.error("Missing input parameters");
+            return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         } else {
-            return Response.ok(this.planner.getAdps(aam)).build();
+            return Response.ok(planner.getAdps(aam)).build();
         }
     }
 
@@ -72,10 +71,10 @@ public class PlannerResource implements Resource{
     @Path("dam")
     public Response getDam(String adp) {
         if (adp == null) {
-            PlannerResource.LOG.error("Missing input parameters");
-            return Response.status(Status.NOT_ACCEPTABLE).build();
+            LOG.error("Missing input parameters");
+            return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         } else {
-            return Response.ok(this.planner.getDam(adp)).build();
+            return Response.ok(planner.getDam(adp)).build();
         }
     }
 }

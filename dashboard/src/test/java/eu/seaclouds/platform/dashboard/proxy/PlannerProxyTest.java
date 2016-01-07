@@ -36,13 +36,13 @@ public class PlannerProxyTest extends AbstractProxyTest<PlannerProxy> {
     public void testGetMonitoringRulesByTemplateId() throws Exception {
         String xml = TestUtils.getStringFromPath(TestFixtures.MONITORING_RULES_PATH);
 
-        this.getMockWebServer().enqueue(new MockResponse()
+        getMockWebServer().enqueue(new MockResponse()
                         .setBody(xml)
                         .setHeader("Accept", MediaType.TEXT_PLAIN)
                         .setHeader("Content-Type", MediaType.APPLICATION_XML)
         );
 
-        MonitoringRules monitoringRules = this.getProxy().getMonitoringRulesByTemplateId(this.RANDOM_STRING);
+        MonitoringRules monitoringRules = getProxy().getMonitoringRulesByTemplateId(RANDOM_STRING);
         assertEquals(ObjectMapperHelpers.XmlToObject(xml, MonitoringRules.class), monitoringRules);
     }
 
@@ -51,13 +51,13 @@ public class PlannerProxyTest extends AbstractProxyTest<PlannerProxy> {
         String aam = TestUtils.getStringFromPath(TestFixtures.AAM_PATH);
         String adps = TestUtils.getStringFromPath(TestFixtures.ADPS_PATH);
 
-        this.getMockWebServer().enqueue(new MockResponse()
+        getMockWebServer().enqueue(new MockResponse()
                         .setBody(adps)
                         .setHeader("Accept", MediaType.TEXT_PLAIN)
                         .setHeader("Content-Type", MediaType.APPLICATION_XML)
         );
 
-        assertEquals(adps, this.getProxy().getAdps(aam));
+        assertEquals(adps, getProxy().getAdps(aam));
     }
 
     @Test
@@ -65,17 +65,17 @@ public class PlannerProxyTest extends AbstractProxyTest<PlannerProxy> {
         String adp = TestUtils.getStringFromPath(TestFixtures.ADP_PATH);
         String dam = TestUtils.getStringFromPath(TestFixtures.TOSCA_DAM_PATH);
 
-        this.getMockWebServer().enqueue(new MockResponse()
+        getMockWebServer().enqueue(new MockResponse()
                         .setBody(dam)
                         .setHeader("Accept", MediaType.TEXT_PLAIN)
                         .setHeader("Content-Type", MediaType.APPLICATION_XML)
         );
 
-        assertEquals(dam, this.getProxy().getDam(adp));
+        assertEquals(dam, getProxy().getDam(adp));
     }
 
     @Override
     public PlannerProxy getProxy() {
-        return this.getSupport().getConfiguration().getPlannerProxy();
+        return getSupport().getConfiguration().getPlannerProxy();
     }
 }
