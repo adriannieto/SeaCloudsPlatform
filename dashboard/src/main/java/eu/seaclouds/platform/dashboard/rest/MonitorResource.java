@@ -134,12 +134,12 @@ public class MonitorResource implements Resource{
     @GET
     @Timed
     @Produces(MediaType.TEXT_PLAIN)
-    @Path("applications/{seacloudsId}/entities/{brooklynEntityId}/metrics/{brooklynMetricId}")
+    @Path("applications/{seacloudsId}/entities/{entityId}/metrics/{metricId}")
     @Deprecated
     @ApiOperation(value="Get Metric Value from a particular <SeaCloudsApplication, EntityId, MetricId> combination")
     public Response getMetricValue(@PathParam("seacloudsId") String seacloudsId,
-                                   @PathParam("brooklynEntityId") String brooklynEntityId,
-                                   @PathParam("brooklynMetricId") String brooklynMetricId) throws IOException {
+                                   @PathParam("entityId") String brooklynEntityId,
+                                   @PathParam("metricId") String brooklynMetricId) throws IOException {
 
         if (seacloudsId == null || brooklynEntityId == null || brooklynMetricId == null) {
             LOG.error("Missing input parameters");
