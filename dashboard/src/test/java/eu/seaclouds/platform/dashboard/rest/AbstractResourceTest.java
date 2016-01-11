@@ -89,11 +89,11 @@ public abstract class AbstractResourceTest<T extends Resource> {
                 TestUtils.getStringFromPath(TestFixtures.ENTITIES_PATH), EntitySummary.class);
 
 
-        agreement = ObjectMapperHelpers.XmlToObject(
-                TestUtils.getStringFromPath(TestFixtures.AGREEMENT_PATH_XML), Agreement.class);
-        agreementStatus = ObjectMapperHelpers.XmlToObject(
-                TestUtils.getStringFromPath(TestFixtures.GUARRANTEE_TERMS_STATUS_PATH_XML), GuaranteeTermsStatus.class);
-        agreementTermViolations = ObjectMapperHelpers.XmlToObjectCollection(TestUtils.getStringFromPath(TestFixtures.VIOLATIONS_XML_PATH), Violation.class);
+        agreement = ObjectMapperHelpers.JsonToObject(
+                TestUtils.getStringFromPath(TestFixtures.AGREEMENT_PATH_JSON), Agreement.class);
+        agreementStatus = ObjectMapperHelpers.JsonToObject(
+                TestUtils.getStringFromPath(TestFixtures.AGREEMENT_STATUS_PATH_JSON), GuaranteeTermsStatus.class);
+        agreementTermViolations = ObjectMapperHelpers.JsonToObjectCollection(TestUtils.getStringFromPath(TestFixtures.VIOLATIONS_JSON_PATH), Violation.class);
 
         monitoringRules = ObjectMapperHelpers.XmlToObject(TestUtils.getStringFromPath(TestFixtures.MONITORING_RULES_PATH), MonitoringRules.class);
         topology = TestUtils.getStringFromPath(TestFixtures.DESIGNER_TOPOLOGY);

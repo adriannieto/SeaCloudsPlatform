@@ -41,11 +41,11 @@ public class SlaProxy extends AbstractProxy {
      * @return String representing that the Agreement was installed properly
      */
     public String addAgreement(Agreement slaAgreement) {
-        Entity content = Entity.entity(slaAgreement, MediaType.APPLICATION_XML);
+        Entity content = Entity.entity(slaAgreement, MediaType.APPLICATION_JSON);
 
         Invocation invocation = getJerseyClient().target(getEndpoint() + "/seaclouds/agreements").request()
                 .header("Accept", MediaType.APPLICATION_JSON)
-                .header("Content-Type", MediaType.APPLICATION_XML)
+                .header("Content-Type", MediaType.APPLICATION_JSON)
                 .buildPost(content);
 
         //SLA Core returns a text message if the response was succesfully not the object, this is not the best behaviour
@@ -60,8 +60,8 @@ public class SlaProxy extends AbstractProxy {
      */
     public String removeAgreement(String agreementId) {
         Invocation invocation = getJerseyClient().target(getEndpoint() + "/agreements/" + agreementId).request()
-                .header("Accept", MediaType.APPLICATION_XML)
-                .header("Content-Type", MediaType.APPLICATION_XML)
+                .header("Accept", MediaType.APPLICATION_JSON)
+                .header("Content-Type", MediaType.APPLICATION_JSON)
                 .buildDelete();
 
         //SLA Core returns a text message if the response was succesfully not the object, this is not the best behaviour
@@ -76,8 +76,8 @@ public class SlaProxy extends AbstractProxy {
     public String notifyRulesReady(Agreement slaAgreement) {
         Entity content = Entity.entity("", MediaType.TEXT_PLAIN);
         Invocation invocation = getJerseyClient().target(getEndpoint() + "/seaclouds/commands/rulesready?agreementId=" + slaAgreement.getAgreementId()).request()
-                .header("Accept", MediaType.APPLICATION_XML)
-                .header("Content-Type", MediaType.APPLICATION_XML)
+                .header("Accept", MediaType.APPLICATION_JSON)
+                .header("Content-Type", MediaType.APPLICATION_JSON)
                 .buildPost(content);
 
         //SLA Core returns a text message if the response was succesfully not the object, this is not the best behaviour
@@ -91,8 +91,8 @@ public class SlaProxy extends AbstractProxy {
      */
     public Agreement getAgreement(String agreementId) {
         return getJerseyClient().target(getEndpoint() + "/agreements/" + agreementId).request()
-                .header("Accept", MediaType.APPLICATION_XML)
-                .header("Content-Type", MediaType.APPLICATION_XML)
+                .header("Accept", MediaType.APPLICATION_JSON)
+                .header("Content-Type", MediaType.APPLICATION_JSON)
                 .buildGet().invoke().readEntity(Agreement.class);
     }
 
@@ -104,8 +104,8 @@ public class SlaProxy extends AbstractProxy {
      */
     public Agreement getAgreementByTemplateId(String slaAgreementTemplateId) {
         return getJerseyClient().target(getEndpoint() + "/seaclouds/commands/fromtemplate?templateId=" + slaAgreementTemplateId).request()
-                .header("Accept", MediaType.APPLICATION_XML)
-                .header("Content-Type", MediaType.APPLICATION_XML)
+                .header("Accept", MediaType.APPLICATION_JSON)
+                .header("Content-Type", MediaType.APPLICATION_JSON)
                 .buildGet().invoke().readEntity(Agreement.class);
     }
 
@@ -116,12 +116,20 @@ public class SlaProxy extends AbstractProxy {
      * @return the GuaranteeTermsStatus
      */
     public GuaranteeTermsStatus getAgreementStatus(Agreement agreement) {
-        return getJerseyClient().target(getEndpoint() + "/agreements/" + agreement.getAgreementId() + "/guaranteestatus").request()
-                .header("Accept", MediaType.APPLICATION_XML)
-                .header("Content-Type", MediaType.APPLICATION_XML)
-                .buildGet().invoke().readEntity(GuaranteeTermsStatus.class);
+        return getAgreementStatus(agreement.getAgreementId());
     }
 
+    /**
+     * Creates proxied HTTP GET request to SeaClouds SLA core which retrieves the Agreement Status
+     * @param agreementId to fetch the status
+     * @return the GuaranteeTermsStatus
+     */
+    public GuaranteeTermsStatus getAgreementStatus(String agreementId) {
+        return getJerseyClient().target(getEndpoint() + "/agreements/" + agreementId + "/guaranteestatus").request()
+                .header("Accept", MediaType.APPLICATION_JSON)
+                .header("Content-Type", MediaType.APPLICATION_JSON)
+                .buildGet().invoke().readEntity(GuaranteeTermsStatus.class);
+    }
 
     /**
      * Creates proxied HTTP GET request to SeaClouds SLA core which retrieves the Agreement Term Violations
@@ -131,8 +139,8 @@ public class SlaProxy extends AbstractProxy {
      */
     public List<Violation> getGuaranteeTermViolations(Agreement agreement, GuaranteeTerm guaranteeTerm) {
         return getJerseyClient().target(getEndpoint() + "/violations?agreementId=" + agreement.getAgreementId() + "&guaranteeTerm=" + guaranteeTerm.getName()).request()
-                .header("Accept", MediaType.APPLICATION_XML)
-                .header("Content-Type", MediaType.APPLICATION_XML)
+                .header("Accept", MediaType.APPLICATION_JSON)
+                .header("Content-Type", MediaType.APPLICATION_JSON)
                 .buildGet().invoke().readEntity(new GenericType<List<Violation>>() {
                 });
     }
