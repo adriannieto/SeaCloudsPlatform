@@ -44,21 +44,21 @@ public class SlaProxyTest extends AbstractProxyTest<SlaProxy> {
 
     @Test
     public void testAddAgreement() throws Exception {
-        String xml = TestUtils.getStringFromPath(TestFixtures.AGREEMENT_PATH_XML);
+        String json = TestUtils.getStringFromPath(TestFixtures.AGREEMENT_PATH_JSON);
 
         getMockWebServer().enqueue(new MockResponse()
-                        .setHeader("Accept", MediaType.APPLICATION_XML)
-                        .setHeader("Content-Type", MediaType.APPLICATION_XML)
+                        .setHeader("Accept", MediaType.APPLICATION_JSON)
+                        .setHeader("Content-Type", MediaType.APPLICATION_JSON)
         );
 
-        assertNotNull(getProxy().addAgreement(ObjectMapperHelpers.XmlToObject(xml, Agreement.class)));
+        assertNotNull(getProxy().addAgreement(ObjectMapperHelpers.JsonToObject(json, Agreement.class)));
     }
 
     @Test
     public void testRemoveAgreement() throws Exception {
         getMockWebServer().enqueue(new MockResponse()
-                        .setHeader("Accept", MediaType.APPLICATION_XML)
-                        .setHeader("Content-Type", MediaType.APPLICATION_XML)
+                        .setHeader("Accept", MediaType.APPLICATION_JSON)
+                        .setHeader("Content-Type", MediaType.APPLICATION_JSON)
         );
 
         assertNotNull(getProxy().removeAgreement(RANDOM_STRING));
@@ -66,81 +66,81 @@ public class SlaProxyTest extends AbstractProxyTest<SlaProxy> {
 
     @Test
     public void testNotifyRulesReady() throws Exception {
-        String xml = TestUtils.getStringFromPath(TestFixtures.AGREEMENT_PATH_XML);
+        String json = TestUtils.getStringFromPath(TestFixtures.AGREEMENT_PATH_JSON);
 
         getMockWebServer().enqueue(new MockResponse()
-                        .setHeader("Accept", MediaType.APPLICATION_XML)
-                        .setHeader("Content-Type", MediaType.APPLICATION_XML)
+                        .setHeader("Accept", MediaType.APPLICATION_JSON)
+                        .setHeader("Content-Type", MediaType.APPLICATION_JSON)
         );
 
-        assertNotNull(getProxy().notifyRulesReady(ObjectMapperHelpers.XmlToObject(xml, Agreement.class)));
+        assertNotNull(getProxy().notifyRulesReady(ObjectMapperHelpers.JsonToObject(json, Agreement.class)));
     }
 
     @Test
     public void testGetAgreement() throws Exception {
-        String xml = TestUtils.getStringFromPath(TestFixtures.AGREEMENT_PATH_XML);
+        String json = TestUtils.getStringFromPath(TestFixtures.AGREEMENT_PATH_JSON);
 
         getMockWebServer().enqueue(new MockResponse()
-                        .setBody(xml)
-                        .setHeader("Accept", MediaType.APPLICATION_XML)
-                        .setHeader("Content-Type", MediaType.APPLICATION_XML)
+                        .setBody(json)
+                        .setHeader("Accept", MediaType.APPLICATION_JSON)
+                        .setHeader("Content-Type", MediaType.APPLICATION_JSON)
         );
 
         Agreement response = getProxy().getAgreement(RANDOM_STRING);
 
         // Agreement doesn't implement equals(), so we are going to check the IDs
-        Agreement fixture = ObjectMapperHelpers.XmlToObject(xml, Agreement.class);
+        Agreement fixture = ObjectMapperHelpers.JsonToObject(json, Agreement.class);
         assertEquals(response.getAgreementId(), fixture.getAgreementId());
     }
 
     @Test
     public void testGetAgreementByTemplateId() throws Exception {
-        String xml = TestUtils.getStringFromPath(TestFixtures.AGREEMENT_PATH_XML);
+        String json = TestUtils.getStringFromPath(TestFixtures.AGREEMENT_PATH_JSON);
 
         getMockWebServer().enqueue(new MockResponse()
-                        .setBody(xml)
-                        .setHeader("Accept", MediaType.APPLICATION_XML)
-                        .setHeader("Content-Type", MediaType.APPLICATION_XML)
+                        .setBody(json)
+                        .setHeader("Accept", MediaType.APPLICATION_JSON)
+                        .setHeader("Content-Type", MediaType.APPLICATION_JSON)
         );
 
         Agreement response = getProxy().getAgreementByTemplateId(RANDOM_STRING);
 
         // Agreement doesn't implement equals(), so we are going to check the IDs
-        Agreement fixture = ObjectMapperHelpers.XmlToObject(xml, Agreement.class);
+        Agreement fixture = ObjectMapperHelpers.JsonToObject(json, Agreement.class);
         assertEquals(response.getAgreementId(), fixture.getAgreementId());
     }
 
     @Test
     public void testGetAgreementStatus() throws Exception {
-        String termStatusXml = TestUtils.getStringFromPath(TestFixtures.GUARRANTEE_TERMS_STATUS_PATH_XML);
-        String agreementXml = TestUtils.getStringFromPath(TestFixtures.AGREEMENT_PATH_XML);
+        String termStatusJson = TestUtils.getStringFromPath(TestFixtures.AGREEMENT_STATUS_PATH_JSON);
+        String agreementJson = TestUtils.getStringFromPath(TestFixtures.AGREEMENT_PATH_JSON);
 
-        Agreement agreement = ObjectMapperHelpers.XmlToObject(agreementXml, Agreement.class);
+        Agreement agreement = ObjectMapperHelpers.JsonToObject(agreementJson, Agreement.class);
 
         getMockWebServer().enqueue(new MockResponse()
-                        .setBody(termStatusXml)
-                        .setHeader("Accept", MediaType.APPLICATION_XML)
-                        .setHeader("Content-Type", MediaType.APPLICATION_XML)
+                        .setBody(termStatusJson)
+                        .setHeader("Accept", MediaType.APPLICATION_JSON)
+                        .setHeader("Content-Type", MediaType.APPLICATION_JSON)
         );
 
         // GuaranteeTermsStatus doesn't implement equals(), so we are going to check the IDs
         GuaranteeTermsStatus response = getProxy().getAgreementStatus(agreement);
-        GuaranteeTermsStatus fixture = ObjectMapperHelpers.XmlToObject(termStatusXml, GuaranteeTermsStatus.class);
+        GuaranteeTermsStatus fixture = ObjectMapperHelpers.JsonToObject(termStatusJson, GuaranteeTermsStatus.class);
         assertEquals(response.getAgreementId(), fixture.getAgreementId());
     }
 
     @Test
     public void testGetAgreementViolations() throws Exception {
-        String termStatusXml =  TestUtils.getStringFromPath(TestFixtures.VIOLATIONS_XML_PATH);
+        String violationJson =  TestUtils.getStringFromPath(TestFixtures.VIOLATIONS_JSON_PATH);
 
-        String agreementXml = TestUtils.getStringFromPath(TestFixtures.AGREEMENT_PATH_XML);
-        Agreement agreement = ObjectMapperHelpers.XmlToObject(agreementXml, Agreement.class);
+        String agreementJson = TestUtils.getStringFromPath(TestFixtures.AGREEMENT_PATH_JSON);
+        Agreement agreement = ObjectMapperHelpers.JsonToObject(agreementJson, Agreement.class);
 
         for(int i = 0; i < agreement.getTerms().getAllTerms().getGuaranteeTerms().size(); i++){
             getMockWebServer().enqueue(new MockResponse()
-                            .setBody(termStatusXml)
-                            .setHeader("Accept", MediaType.APPLICATION_XML)
-                            .setHeader("Content-Type", MediaType.APPLICATION_XML)
+                            .setBody(violationJson)
+                            .setHeader("Accept", MediaType.APPLICATION_JSON)
+                            .setHeader("Content-Type", MediaType.APPLICATION_JSON)
             );
         }
 
@@ -151,4 +151,5 @@ public class SlaProxyTest extends AbstractProxyTest<SlaProxy> {
         }
 
     }
+
 }

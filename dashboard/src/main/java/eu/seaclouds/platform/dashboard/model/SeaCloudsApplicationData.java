@@ -17,10 +17,12 @@
 
 package eu.seaclouds.platform.dashboard.model;
 
+import eu.atos.sla.datamodel.IGuaranteeTerm;
 import eu.atos.sla.parser.data.wsag.Agreement;
 import it.polimi.tower4clouds.rules.MonitoringRule;
 import it.polimi.tower4clouds.rules.MonitoringRules;
 import org.apache.brooklyn.rest.domain.ApplicationSummary;
+import org.apache.brooklyn.rest.domain.Status;
 import org.apache.brooklyn.rest.domain.TaskSummary;
 import org.yaml.snakeyaml.Yaml;
 
@@ -46,6 +48,9 @@ public class SeaCloudsApplicationData implements Serializable {
     private String deployerApplicationId;
     private Set<String> monitoringRulesIds;
     private String agreementId;
+
+    private Status deploymentStatus;
+    private IGuaranteeTerm.GuaranteeTermStatusEnum agreementStatus;
 
     public SeaCloudsApplicationData(String toscaDam) {
         this.seaCloudsApplicationId = UUID.randomUUID().toString();
@@ -142,6 +147,21 @@ public class SeaCloudsApplicationData implements Serializable {
         return deployerApplicationId;
     }
 
+    public Status getDeploymentStatus() {
+        return deploymentStatus;
+    }
+
+    public void setDeploymentStatus(Status deploymentStatus) {
+        this.deploymentStatus = deploymentStatus;
+    }
+
+    public IGuaranteeTerm.GuaranteeTermStatusEnum getAgreementStatus() {
+        return agreementStatus;
+    }
+
+    public void setAgreementStatus(IGuaranteeTerm.GuaranteeTermStatusEnum agreementStatus) {
+        this.agreementStatus = agreementStatus;
+    }
 
     @Override
     public boolean equals(Object o) {

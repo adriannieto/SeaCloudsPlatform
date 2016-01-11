@@ -22,6 +22,8 @@ import com.codahale.metrics.annotation.Timed;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
+import eu.atos.sla.datamodel.IGuaranteeTerm;
+import eu.atos.sla.parser.data.GuaranteeTermsStatus;
 import eu.atos.sla.parser.data.wsag.Agreement;
 import eu.seaclouds.platform.dashboard.model.SeaCloudsApplicationData;
 import eu.seaclouds.platform.dashboard.model.SeaCloudsApplicationDataStorage;
@@ -30,6 +32,7 @@ import eu.seaclouds.platform.dashboard.proxy.MonitorProxy;
 import eu.seaclouds.platform.dashboard.proxy.PlannerProxy;
 import eu.seaclouds.platform.dashboard.proxy.SlaProxy;
 import it.polimi.tower4clouds.rules.MonitoringRules;
+import org.apache.brooklyn.rest.domain.ApplicationSummary;
 import org.apache.brooklyn.rest.domain.TaskSummary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +41,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.util.List;
 
 @Path("/deployer")
 @Api("/deployer")
@@ -146,8 +150,16 @@ public class DeployerResource implements Resource{
     @Produces(MediaType.APPLICATION_JSON)
     @Path("applications")
     @ApiOperation(value="List all SeaClouds deployed Applications")
-    public Response listApplications() {
-        return Response.ok(dataStore.listSeaCloudsApplicationData()).build();
+    public Response listApplications() throws IOException {
+        List<SeaCloudsApplicationData> applications = dataStore.listSeaCloudsApplicationData();
+
+        for(SeaCloudsApplicationData application : applications){
+            ApplicationSummary applicationSummary = deployer.getApplication(application.getDeployerApplicationId());
+            GuaranteeTermsStatus agreementStatus = sla.getAgreementStatus(application.getAgreementId());
+            application.setDeploymentStatus(applicationSummary.getStatus());
+            application.setAgreementStatus(IGuaranteeTerm.GuaranteeTermStatusEnum.valueOf(agreementStatus.getValue()));
+        }
+        return Response.ok(applications).build();
     }
 
     @GET

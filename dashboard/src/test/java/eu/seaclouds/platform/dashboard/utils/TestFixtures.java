@@ -29,13 +29,9 @@ public interface TestFixtures {
 
 
     // SLA fixtures
-    String AGREEMENT_PATH_XML = "fixtures/agreement.xml";
     String AGREEMENT_PATH_JSON = "fixtures/agreement.json";
-    String TEMPLATE_PATH_XML = "fixtures/agreement-template.xml";
     String TEMPLATE_PATH_JSON = "fixtures/agreement-template.json";
-    String GUARRANTEE_TERMS_STATUS_PATH_XML = "fixtures/guarantee-term-status.xml";
-    String GUARRANTEE_TERM_STATUS_PATH_JSON = "fixtures/guarantee-term-status.json";
-    String VIOLATIONS_XML_PATH = "fixtures/violations.xml";
+    String AGREEMENT_STATUS_PATH_JSON = "fixtures/agreement-status.json";
     String VIOLATIONS_JSON_PATH = "fixtures/violations.json";
 
     // Monitor fixtures
