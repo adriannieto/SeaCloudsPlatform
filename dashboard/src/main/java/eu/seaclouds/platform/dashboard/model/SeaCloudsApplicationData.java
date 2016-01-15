@@ -24,12 +24,16 @@ import it.polimi.tower4clouds.rules.MonitoringRules;
 import org.apache.brooklyn.rest.domain.ApplicationSummary;
 import org.apache.brooklyn.rest.domain.Status;
 import org.apache.brooklyn.rest.domain.TaskSummary;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.Serializable;
 import java.util.*;
 
 public class SeaCloudsApplicationData implements Serializable {
+    private static final Logger LOG = LoggerFactory.getLogger(SeaCloudsApplicationData.class);
+
     private static final String YAML_DESCRIPTION_TAG = "description";
     private static final String YAML_TOPOLOGY_TEMPLATE_TAG = "topology_template";
     private static final String YAML_GROUPS_TEMPLATE_TAG = "groups";
@@ -79,16 +83,29 @@ public class SeaCloudsApplicationData implements Serializable {
         Map topologyTemplate = (Map) toscaDamMap.get(YAML_TOPOLOGY_TEMPLATE_TAG);
         Map groups = (Map) topologyTemplate.get(YAML_GROUPS_TEMPLATE_TAG);
         Map monitoringInformation = (Map) groups.get(YAML_AGREEMENT_TAG);
-        Map policies = (Map)((List)  monitoringInformation.get(YAML_POLICIES_TAG)).get(0);
-        return (String) policies.get(YAML_ID_TAG);
+
+        if(monitoringInformation != null){
+            Map policies = (Map)((List)  monitoringInformation.get(YAML_POLICIES_TAG)).get(0);
+            return (String) policies.get(YAML_ID_TAG);
+        } else{
+            LOG.warn("This TOSCA doesn't contain any SLA Agreement Template ID");
+            return null;
+        }
+
     }
 
     static String extractMonitoringRulesemplateId(Map toscaDamMap) {
         Map topologyTemplate = (Map) toscaDamMap.get(YAML_TOPOLOGY_TEMPLATE_TAG);
         Map groups = (Map) topologyTemplate.get(YAML_GROUPS_TEMPLATE_TAG);
         Map slaGenInfo = (Map) groups.get(YAML_MONITORING_INFORMATION_TAG);
-        Map policies = (Map) ((List) slaGenInfo.get(YAML_POLICIES_TAG)).get(0);
-        return (String) policies.get(YAML_ID_TAG);
+
+        if(slaGenInfo != null){
+            Map policies = (Map) ((List) slaGenInfo.get(YAML_POLICIES_TAG)).get(0);
+            return (String) policies.get(YAML_ID_TAG);
+        } else{
+            LOG.warn("This TOSCA doesn't contain any MonitoringRules ID");
+            return null;
+        }
     }
 
 

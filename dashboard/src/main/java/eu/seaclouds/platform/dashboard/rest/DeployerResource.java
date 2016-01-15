@@ -45,7 +45,7 @@ import java.util.List;
 
 @Path("/deployer")
 @Api("/deployer")
-public class DeployerResource implements Resource{
+public class DeployerResource implements Resource {
     private static final Logger LOG = LoggerFactory.getLogger(DeployerResource.class);
 
     private final DeployerProxy deployer;
@@ -69,29 +69,31 @@ public class DeployerResource implements Resource{
 
         // TODO: Undo grafana
 
-
-        try {
-            for (String ruleId : seaCloudsApplicationData.getMonitoringRulesIds()) {
-                monitor.removeMonitoringRule(ruleId);
+        if (seaCloudsApplicationData.getMonitoringRulesTemplateId() != null) {
+            try {
+                for (String ruleId : seaCloudsApplicationData.getMonitoringRulesIds()) {
+                    monitor.removeMonitoringRule(ruleId);
+                }
+            } catch (Exception e) {
+                LOG.debug("Something went wrong during the cleanup of the monitoring rules");
+                // This is perfectly fine, it will happen if this phase was not reached before the error.
             }
-        } catch (Exception e) {
-            LOG.debug("Something went wrong during the cleanup of the monitoring rules");
-            // This is perfectly fine, it will happen if this phase was not reached before the error.
         }
-
-        try {
-            sla.removeAgreement(seaCloudsApplicationData.getAgreementId());
-        } catch (Exception e) {
-            LOG.debug("Something went wrong during the cleanup of the agreement");
-            // This is perfectly fine, it will happen if this phase was not reached before the error.
+        if (seaCloudsApplicationData.getAgreementId() != null) {
+            try {
+                sla.removeAgreement(seaCloudsApplicationData.getAgreementId());
+            } catch (Exception e) {
+                LOG.debug("Something went wrong during the cleanup of the agreement");
+                // This is perfectly fine, it will happen if this phase was not reached before the error.
+            }
         }
-
         try {
             deployer.removeApplication(seaCloudsApplicationData.getDeployerApplicationId());
         } catch (Exception e) {
             LOG.debug("Something went wrong during the cleanup of the application");
             // This is perfectly fine, it will happen if this phase was not reached before the error.
         }
+
 
     }
 
@@ -116,22 +118,26 @@ public class DeployerResource implements Resource{
                 TaskSummary taskSummary = deployer.deployApplication(dam);
                 seaCloudsApplication.setDeployerApplicationId(taskSummary);
 
-                LOG.debug("STEP 2: Retrieve Monitoring Rules from TOSCA");
-                MonitoringRules monitoringRules = planner.getMonitoringRulesByTemplateId(seaCloudsApplication.getMonitoringRulesTemplateId());
+                if (seaCloudsApplication.getMonitoringRulesTemplateId() != null) {
+                    LOG.debug("STEP 2: Retrieve Monitoring Rules from TOSCA");
+                    MonitoringRules monitoringRules = planner.getMonitoringRulesByTemplateId(seaCloudsApplication.getMonitoringRulesTemplateId());
 
-                LOG.debug("STEP 3: Install Monitoring Rules");
-                monitor.addMonitoringRules(monitoringRules);
-                seaCloudsApplication.setMonitoringRulesIds(monitoringRules);
+                    LOG.debug("STEP 3: Install Monitoring Rules");
+                    monitor.addMonitoringRules(monitoringRules);
+                    seaCloudsApplication.setMonitoringRulesIds(monitoringRules);
+                }
 
-                LOG.debug("STEP 4: Retrieve SLA Agreements from TOSCA");
-                Agreement agreement = sla.getAgreementByTemplateId(seaCloudsApplication.getAgreementTemplateId());
+                if (seaCloudsApplication.getAgreementTemplateId() != null) {
+                    LOG.debug("STEP 4: Retrieve SLA Agreements from TOSCA");
+                    Agreement agreement = sla.getAgreementByTemplateId(seaCloudsApplication.getAgreementTemplateId());
 
-                LOG.debug("STEP 5: Install SLA Agreements");
-                sla.addAgreement(agreement);
-                seaCloudsApplication.setAgreementId(agreement);
+                    LOG.debug("STEP 5: Install SLA Agreements");
+                    sla.addAgreement(agreement);
+                    seaCloudsApplication.setAgreementId(agreement);
 
-                LOG.debug("STEP 6: Notify Rules Ready (Issue #56)");
-                sla.notifyRulesReady(agreement);
+                    LOG.debug("STEP 6: Notify Rules Ready (Issue #56)");
+                    sla.notifyRulesReady(agreement);
+                }
 
                 LOG.debug("Application deployment process finished");
                 dataStore.addSeaCloudsApplicationData(seaCloudsApplication);
@@ -149,15 +155,19 @@ public class DeployerResource implements Resource{
     @Timed
     @Produces(MediaType.APPLICATION_JSON)
     @Path("applications")
-    @ApiOperation(value="List all SeaClouds deployed Applications")
+    @ApiOperation(value = "List all SeaClouds deployed Applications")
     public Response listApplications() throws IOException {
         List<SeaCloudsApplicationData> applications = dataStore.listSeaCloudsApplicationData();
 
-        for(SeaCloudsApplicationData application : applications){
+        for (SeaCloudsApplicationData application : applications) {
             ApplicationSummary applicationSummary = deployer.getApplication(application.getDeployerApplicationId());
-            GuaranteeTermsStatus agreementStatus = sla.getAgreementStatus(application.getAgreementId());
             application.setDeploymentStatus(applicationSummary.getStatus());
-            application.setAgreementStatus(IGuaranteeTerm.GuaranteeTermStatusEnum.valueOf(agreementStatus.getValue()));
+
+            if (application.getAgreementTemplateId() != null) {
+                GuaranteeTermsStatus agreementStatus = sla.getAgreementStatus(application.getAgreementId());
+                application.setAgreementStatus(IGuaranteeTerm.GuaranteeTermStatusEnum.valueOf(agreementStatus.getValue()));
+            }
+
         }
         return Response.ok(applications).build();
     }
@@ -166,7 +176,7 @@ public class DeployerResource implements Resource{
     @Timed
     @Produces(MediaType.APPLICATION_JSON)
     @Path("applications/{seaCloudsId}")
-    @ApiOperation(value="Get SeaClouds Application details from the Deployer Component")
+    @ApiOperation(value = "Get SeaClouds Application details from the Deployer Component")
     public Response getApplication(@PathParam("seaCloudsId") String seaCloudsId) throws IOException {
         if (seaCloudsId == null) {
             LOG.error("Missing input parameters");
@@ -186,7 +196,7 @@ public class DeployerResource implements Resource{
     @Timed
     @Produces(MediaType.APPLICATION_JSON)
     @Path("applications/{seaCloudsId}")
-    @ApiOperation(value="Remove SeaClouds Application from SeaClouds")
+    @ApiOperation(value = "Remove SeaClouds Application from SeaClouds")
     public Response removeApplication(@PathParam("seaCloudsId") String seaCloudsId) {
         if (seaCloudsId == null) {
             LOG.error("Missing input parameters");
