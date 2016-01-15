@@ -62,6 +62,11 @@ public class SlaResource implements Resource{
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
 
+            if(seaCloudsApplicationData.getAgreementId() == null){
+                LOG.error("Application " + seaCloudsId + " doesn't contain any agreement");
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+            
             return Response.ok(sla.getAgreement(seaCloudsApplicationData.getAgreementId())).build();
         }
     }
@@ -82,6 +87,11 @@ public class SlaResource implements Resource{
             if (seaCloudsApplicationData == null) {
                 LOG.error("Application " + seaCloudsId + " not found");
                 return Response.status(Response.Status.BAD_REQUEST).build();
+            }
+
+            if(seaCloudsApplicationData.getAgreementId() == null){
+                LOG.error("Application " + seaCloudsId + " doesn't contain any agreement");
+                return Response.status(Response.Status.NOT_FOUND).build();
             }
 
             Agreement agreement = sla.getAgreement(seaCloudsApplicationData.getAgreementId());
@@ -109,9 +119,15 @@ public class SlaResource implements Resource{
             return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         } else {
             SeaCloudsApplicationData seaCloudsApplicationData = dataStore.getSeaCloudsApplicationDataById(seaCloudsId);
+
             if (seaCloudsApplicationData == null) {
                 LOG.error("Application " + seaCloudsId + " not found");
                 return Response.status(Response.Status.BAD_REQUEST).build();
+            }
+
+            if(seaCloudsApplicationData.getAgreementId() == null){
+                LOG.error("Application " + seaCloudsId + " doesn't contain any agreement");
+                return Response.status(Response.Status.NOT_FOUND).build();
             }
 
             Agreement agreement = sla.getAgreement(seaCloudsApplicationData.getAgreementId());

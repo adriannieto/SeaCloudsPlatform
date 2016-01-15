@@ -28,23 +28,28 @@ import java.net.URL;
 import java.util.Map;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
 
 public class SeaCloudsApplicationDataTest {
+    private static final String TOSCA_DAM_WITHOUT_SLA_MR_FILE_PATH = "fixtures/tosca-dam-without-mr-and-sla.yml";
     private static final String TOSCA_DAM_FILE_PATH = "fixtures/tosca-dam.yml";
     private static final String DESCRIPTION = "Sample 3-tier application";
     private static final String MONITORING_RULES_TEMPLATE_ID = "3e63723c-9715-457a-9aeb-2ae1b274e8b1";
     private static final String AGREEMENT_TEMPLATE_ID = "3e63723c-9715-457a-9aeb-2ae1b274e8b2";
 
     private Map toscaDamMap;
+    private Map toscaDamMapWithoutMRandSLA;
+
     private SeaCloudsApplicationData applicationData;
 
     //TODO: Modify this class when we will take Objects as and input for the setters instead of strings.
 
     @BeforeMethod
     public void setUp() throws Exception {
-        Yaml yamlParser = new Yaml();
         URL resource = Resources.getResource(TOSCA_DAM_FILE_PATH);
-        toscaDamMap = (Map) yamlParser.load(FileUtils.openInputStream(new File(resource.getFile())));
+        toscaDamMap = (Map) new Yaml().load(FileUtils.openInputStream(new File(resource.getFile())));
+        resource = Resources.getResource(TOSCA_DAM_WITHOUT_SLA_MR_FILE_PATH);
+        toscaDamMapWithoutMRandSLA = (Map) new Yaml().load(FileUtils.openInputStream(new File(resource.getFile())));
     }
 
     @Test
@@ -57,12 +62,18 @@ public class SeaCloudsApplicationDataTest {
     public void testExtractAgreementTemplateId() {
         String toscaAgreementTemplateId = SeaCloudsApplicationData.extractAgreementTemplateId(toscaDamMap);
         assertEquals(toscaAgreementTemplateId, AGREEMENT_TEMPLATE_ID);
+
+        toscaAgreementTemplateId = SeaCloudsApplicationData.extractAgreementTemplateId(toscaDamMapWithoutMRandSLA);
+        assertNull(toscaAgreementTemplateId);
     }
 
     @Test
     public void testExtractMonitoringRulesemplateId() {
         String monitoringRulesId = SeaCloudsApplicationData.extractMonitoringRulesemplateId(toscaDamMap);
         assertEquals(monitoringRulesId, MONITORING_RULES_TEMPLATE_ID);
+
+        monitoringRulesId = SeaCloudsApplicationData.extractMonitoringRulesemplateId(toscaDamMapWithoutMRandSLA);
+        assertNull(monitoringRulesId);
     }
 
     @Test
