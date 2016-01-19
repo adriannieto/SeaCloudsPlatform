@@ -22,18 +22,37 @@ import eu.atos.sla.parser.data.GuaranteeTermsStatus;
 import eu.atos.sla.parser.data.Violation;
 import eu.atos.sla.parser.data.wsag.Agreement;
 import eu.atos.sla.parser.data.wsag.GuaranteeTerm;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.AnnotationIntrospector;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
+
+import java.io.IOException;
 import java.util.List;
 
 public class SlaProxy extends AbstractProxy {
     private static final Logger LOG = LoggerFactory.getLogger(SlaProxy.class);
-
+    private ObjectMapper mapper;
+    
+    public SlaProxy() {
+        mapper = new ObjectMapper();
+        AnnotationIntrospector jaxb = new JaxbAnnotationIntrospector();
+        // if ONLY using JAXB annotations:
+        mapper.setAnnotationIntrospector(jaxb);
+        // if using BOTH JAXB annotations AND Jackson annotations:
+        AnnotationIntrospector jackson = new JacksonAnnotationIntrospector();
+        mapper.setAnnotationIntrospector(AnnotationIntrospector.pair(jackson, jaxb));
+    }
     /**
      * Creates proxied HTTP POST request to SeaClouds SLA core which installs a set of SLA Agreements
      * paired with the corresponding Monitoring Rules Monitoring Rules
@@ -138,10 +157,17 @@ public class SlaProxy extends AbstractProxy {
      * @return the list of Violations for this <Agreement, GuaranteeTerm> pair
      */
     public List<Violation> getGuaranteeTermViolations(Agreement agreement, GuaranteeTerm guaranteeTerm) {
-        return getJerseyClient().target(getEndpoint() + "/violations?agreementId=" + agreement.getAgreementId() + "&guaranteeTerm=" + guaranteeTerm.getName()).request()
+        String json = getJerseyClient().target(getEndpoint() + "/violations?agreementId=" + agreement.getAgreementId() + "&guaranteeTerm=" + guaranteeTerm.getName()).request()
                 .header("Accept", MediaType.APPLICATION_JSON)
                 .header("Content-Type", MediaType.APPLICATION_JSON)
-                .buildGet().invoke().readEntity(new GenericType<List<Violation>>() {
-                });
+                .buildGet().invoke().readEntity(String.class);
+        try {
+            return mapper.readValue(json, new TypeReference<List<Violation>>(){});
+        } catch (IOException e) {
+            /*
+             * TODO: Change Runtime for a DashboardException
+             */
+            throw new RuntimeException(e);
+        }
     }
 }
