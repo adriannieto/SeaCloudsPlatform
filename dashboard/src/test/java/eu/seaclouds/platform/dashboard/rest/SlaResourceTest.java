@@ -39,6 +39,7 @@ public class SlaResourceTest extends AbstractResourceTest<SlaResource>{
     public void setUpMethod() throws Exception {
         super.setUpMethod();
         applicationData = new SeaCloudsApplicationData(getDam());
+        applicationData.setAgreementId(getAgreement());
         SeaCloudsApplicationDataStorage.getInstance().addSeaCloudsApplicationData(applicationData);
     }
 

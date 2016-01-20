@@ -163,7 +163,7 @@ public class DeployerResource implements Resource {
             ApplicationSummary applicationSummary = deployer.getApplication(application.getDeployerApplicationId());
             application.setDeploymentStatus(applicationSummary.getStatus());
 
-            if (application.getAgreementTemplateId() != null) {
+            if (application.getAgreementId() != null) {
                 GuaranteeTermsStatus agreementStatus = sla.getAgreementStatus(application.getAgreementId());
                 application.setAgreementStatus(IGuaranteeTerm.GuaranteeTermStatusEnum.valueOf(agreementStatus.getValue()));
             }

@@ -131,6 +131,7 @@ public abstract class AbstractResourceTest<T extends Resource> {
         when(slaProxy.getAgreement(anyString())).thenReturn(agreement);
         when(slaProxy.getAgreementByTemplateId(anyString())).thenReturn(agreement);
         when(slaProxy.getAgreementStatus(Matchers.<Agreement>any())).thenReturn(agreementStatus);
+        when(slaProxy.getAgreementStatus(anyString())).thenReturn(agreementStatus);
         when(slaProxy.getGuaranteeTermViolations(Matchers.<Agreement>any(), Matchers.<GuaranteeTerm>any())).thenReturn(agreementTermViolations);
         when(slaProxy.notifyRulesReady(Matchers.<Agreement>any())).thenReturn(RANDOM_STRING);
         when(slaProxy.removeAgreement(anyString())).thenReturn(RANDOM_STRING);
