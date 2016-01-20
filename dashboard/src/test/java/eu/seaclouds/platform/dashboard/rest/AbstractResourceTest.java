@@ -89,7 +89,7 @@ public abstract class AbstractResourceTest<T extends Resource> {
                 TestUtils.getStringFromPath(TestFixtures.ENTITIES_PATH), EntitySummary.class);
 
 
-        agreement = ObjectMapperHelpers.JsonToObject(
+        agreement = ObjectMapperHelpers.JsonToObjectJackson2(
                 TestUtils.getStringFromPath(TestFixtures.AGREEMENT_PATH_JSON), Agreement.class);
         agreementStatus = ObjectMapperHelpers.JsonToObjectJackson2(
                 TestUtils.getStringFromPath(TestFixtures.AGREEMENT_STATUS_PATH_JSON), GuaranteeTermsStatus.class);

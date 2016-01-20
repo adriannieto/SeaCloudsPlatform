@@ -20,11 +20,6 @@ package eu.seaclouds.platform.dashboard.util;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;
-import org.codehaus.jackson.type.TypeReference;
-
-import com.fasterxml.jackson.databind.AnnotationIntrospector;
-import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -47,13 +42,6 @@ public class ObjectMapperHelpers {
     
     static {
         jackson2Mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-        AnnotationIntrospector jaxb = new JaxbAnnotationIntrospector();
-        // if ONLY using JAXB annotations:
-        jackson2Mapper.setAnnotationIntrospector(jaxb);
-        // if using BOTH JAXB annotations AND Jackson annotations:
-        AnnotationIntrospector jackson = new JacksonAnnotationIntrospector();
-        jackson2Mapper.setAnnotationIntrospector(AnnotationIntrospector.pair(jackson, jaxb));
-        
     }
     
     /**

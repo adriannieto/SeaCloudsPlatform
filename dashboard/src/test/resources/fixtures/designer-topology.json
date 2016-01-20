@@ -12,12 +12,12 @@
         "max_version": "8",
         "qos": [
           {
-            "metric": "throughput",
+            "metric": "AverageThroughput",
             "operator": "LT",
             "threshold": "10"
           },
           {
-            "metric": "responsetime",
+            "metric": "AverageResponseTime",
             "operator": "LT",
             "threshold": "5000"
           }

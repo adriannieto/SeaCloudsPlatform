@@ -27,14 +27,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 
 import java.io.IOException;
@@ -46,12 +42,6 @@ public class SlaProxy extends AbstractProxy {
     
     public SlaProxy() {
         mapper = new ObjectMapper();
-        AnnotationIntrospector jaxb = new JaxbAnnotationIntrospector();
-        // if ONLY using JAXB annotations:
-        mapper.setAnnotationIntrospector(jaxb);
-        // if using BOTH JAXB annotations AND Jackson annotations:
-        AnnotationIntrospector jackson = new JacksonAnnotationIntrospector();
-        mapper.setAnnotationIntrospector(AnnotationIntrospector.pair(jackson, jaxb));
     }
     /**
      * Creates proxied HTTP POST request to SeaClouds SLA core which installs a set of SLA Agreements

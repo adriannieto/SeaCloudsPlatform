@@ -1,11 +1,11 @@
 [
-  {
-    "uuid":"67c764e4-1272-4bdc-a2bd-affee26a2694",
-    "datetime":"2014-08-25T14:54:00+0100",
-    "contract_uuid":"agreement02",
-    "service_name":"ServiceName",
-    "service_scope":"ScopeName2",
-    "metric_name":"Performance",
-    "actual_value":"0"
-  }
+ {
+  "uuid":"bfad3903-dfa2-4069-84a6-86cfb3e6c702",
+  "contract_uuid":"agreement01",
+  "service_name":"ServiceName","service_scope":"ScopeName2",
+  "metric_name":"Performance",
+  "datetime":"2014-08-25T12:54:00+0000",
+  "expected_value":null,
+  "actual_value":"0"
+ }
 ]
