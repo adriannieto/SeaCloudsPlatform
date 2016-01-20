@@ -17,6 +17,7 @@
 
 package eu.seaclouds.platform.dashboard.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.atos.sla.datamodel.IGuaranteeTerm;
 import eu.atos.sla.parser.data.wsag.Agreement;
 import it.polimi.tower4clouds.rules.MonitoringRule;
@@ -55,6 +56,7 @@ public class SeaCloudsApplicationData implements Serializable {
 
     private Status deploymentStatus;
     private IGuaranteeTerm.GuaranteeTermStatusEnum agreementStatus;
+
 
     public SeaCloudsApplicationData(String toscaDam) {
         this.seaCloudsApplicationId = UUID.randomUUID().toString();
@@ -131,47 +133,53 @@ public class SeaCloudsApplicationData implements Serializable {
         this.agreementId = agreement.getAgreementId();
     }
 
+    @JsonProperty
     public String getSeaCloudsApplicationId() {
         return seaCloudsApplicationId;
     }
 
+    @JsonProperty
     public String getName() {
         return name;
     }
 
+    @JsonProperty
     public String getMonitoringRulesTemplateId() {
         return monitoringRulesTemplateId;
     }
 
+    @JsonProperty
     public String getAgreementTemplateId() {
         return agreementTemplateId;
     }
 
+    @JsonProperty
     public Set<String> getMonitoringRulesIds() {
         return monitoringRulesIds;
     }
 
+    @JsonProperty
     public String getAgreementId() {
         return agreementId;
     }
 
+    @JsonProperty
     public String getToscaDam() {
         Yaml yamlParser = new Yaml();
         return yamlParser.dump(toscaDamMap);
     }
 
+    @JsonProperty
     public String getDeployerApplicationId() {
         return deployerApplicationId;
     }
 
+    @JsonProperty
     public Status getDeploymentStatus() {
         return deploymentStatus;
     }
 
-    public void setDeploymentStatus(Status deploymentStatus) {
-        this.deploymentStatus = deploymentStatus;
-    }
-
+    @JsonProperty
     public IGuaranteeTerm.GuaranteeTermStatusEnum getAgreementStatus() {
         return agreementStatus;
     }
@@ -179,6 +187,11 @@ public class SeaCloudsApplicationData implements Serializable {
     public void setAgreementStatus(IGuaranteeTerm.GuaranteeTermStatusEnum agreementStatus) {
         this.agreementStatus = agreementStatus;
     }
+
+    public void setDeploymentStatus(Status deploymentStatus) {
+        this.deploymentStatus = deploymentStatus;
+    }
+
 
     @Override
     public boolean equals(Object o) {
