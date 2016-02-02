@@ -120,6 +120,7 @@ angular.module('seacloudsDashboard.wizards.addApplication', ['ngRoute', 'angular
                 case 1:
                     break;
                 case 2:
+                    $scope.applicationWizardData.aam = undefined;
                     break;
                 case 3:
                     $scope.applicationWizardData.adpDescriptions = undefined;
@@ -146,11 +147,13 @@ angular.module('seacloudsDashboard.wizards.addApplication', ['ngRoute', 'angular
                     $scope.currentStep++;
                     break;
                 case 2:
-                    $scope.applicationWizardData.topology.name = $scope.applicationWizardData.name;
-                    $scope.applicationWizardData.topology.application_requirements = $scope.applicationWizardData.application_requirements;
-                    $scope.applicationWizardData.topology.application_requirements.workload *= 100; // Fix Issue #182
-                    $scope.applicationWizardData.topology.application_requirements.availability /= 100; // Fix Issue #223
-                    $scope.SeaCloudsApi.getAamFromDesigner($scope.applicationWizardData.topology).
+                    var designPhaseOutput = $scope.applicationWizardData.topology;
+                    designPhaseOutput.name = $scope.applicationWizardData.name;
+                    designPhaseOutput.application_requirements = $scope.applicationWizardData.application_requirements;
+                    designPhaseOutput.application_requirements.workload *= 60; // Fix Issue #182
+                    designPhaseOutput.application_requirements.availability /= 100; // Fix Issue #223
+                    
+                    $scope.SeaCloudsApi.getAamFromDesigner(designPhaseOutput).
                         success(function (aam) {
                             $scope.applicationWizardData.aam = aam;
                             $scope.currentStep++;
