@@ -174,8 +174,8 @@ angular.module('seacloudsDashboard.wizards.addApplication', ['ngRoute', 'angular
                     break;
                 case 3:
                     $scope.SeaCloudsApi.getDam($scope.applicationWizardData.finalAdp).
-                        success(function(dam){
-                            $scope.applicationWizardData.finalDam = dam;
+                        success(function(plannerResponse){
+                            $scope.applicationWizardData.finalDam = plannerResponse.dam;
                             $scope.damGenerated = true;
                         }).
                         error(function(){
